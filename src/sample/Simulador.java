@@ -1,5 +1,7 @@
 package sample;
 
+import org.json.JSONObject;
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
@@ -26,12 +28,43 @@ public class Simulador {
             servidor.configurar(group,"Server 01");
 
             Client client1 = new Client(group, "client01");
-            Client client = new Client(group, "client00");
+            //Client client = new Client(group, "client00");
             //Client client2 = new Client(group, "client02");
 
             servidor.start();
-            //client1.start();
-            //client.start();
+
+//                        GenerateKeys gk = null;
+//            try {
+//                gk = new GenerateKeys(1024);
+//                gk.createKeys();
+//                 System.out.println(gk.getPrivateKey().getEncoded());
+//                  System.out.println(gk.getPublicKey().getEncoded());
+//            } catch (NoSuchAlgorithmException e) {
+//                System.err.println(e.getMessage());
+//            }
+//            JSONObject json = new JSONObject();
+//            json.put("key",gk.getPublicKey().getEncoded());
+//            System.out.println(json.get("key"));
+//            try {
+//                String cod = RSACryptography.encrypt(gk.getPrivateKey(), "CRIPTOGRAFIA WOW");
+//                System.out.println(cod);
+//                PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec( ((byte[]) json.get("key"))));
+//                System.out.println(RSACryptography.decrypt(publicKey, cod));
+//            } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeyException e) {
+//                e.printStackTrace();
+//            } catch (NoSuchPaddingException e) {
+//                e.printStackTrace();
+//            } catch (BadPaddingException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeySpecException e) {
+//                e.printStackTrace();
+//            } catch (IllegalBlockSizeException e) {
+//                e.printStackTrace();
+//            }
+             client1.start();
+          //  client.start();
             //client2.start();
 
           //  s.leaveGroup(group);
@@ -45,7 +78,9 @@ public class Simulador {
     }
 }
 
-//            GenerateKeys gk = null;
+
+//
+//                        GenerateKeys gk = null;
 //            try {
 //                gk = new GenerateKeys(1024);
 //                gk.createKeys();
@@ -54,8 +89,23 @@ public class Simulador {
 //            } catch (NoSuchAlgorithmException e) {
 //                System.err.println(e.getMessage());
 //            }
+//            JSONObject json = new JSONObject();
+//            json.put("key",gk.getPublicKey().getEncoded());
 //            try {
 //                String cod = RSACryptography.encrypt(gk.getPrivateKey(), "CRIPTOGRAFIA BOYZ");
 //                System.out.println(cod);
-//                PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(gk.getPublicKey().getEncoded()));
-//                System.out.println(RSACryptography.decrypt(publicKey,cod));
+//                PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec((byte[]) json.get("key")));
+//                System.out.println(RSACryptography.decrypt(publicKey, cod));
+//            } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeyException e) {
+//                e.printStackTrace();
+//            } catch (NoSuchPaddingException e) {
+//                e.printStackTrace();
+//            } catch (BadPaddingException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeySpecException e) {
+//                e.printStackTrace();
+//            } catch (IllegalBlockSizeException e) {
+//                e.printStackTrace();
+//            }

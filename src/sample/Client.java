@@ -4,9 +4,9 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.security.Key;
 import java.security.NoSuchAlgorithmException;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import org.json.*;
 
@@ -18,7 +18,7 @@ public class Client extends Thread {
     InetAddress group;
     String name;
     Receptor receptor;
-    List<String> ids_conectados;
+    Map<String,String> ids_conectados;
     GenerateKeys gk;
 
 
@@ -32,12 +32,12 @@ public class Client extends Thread {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        this.ids_conectados = new ArrayList<>();
+        this.ids_conectados = new HashMap<>();
         try {
             gk = new GenerateKeys(1024);
             gk.createKeys();
            // System.out.println(gk.getPrivateKey().getEncoded());
-          //  System.out.println(gk.getPublicKey().getEncoded());
+            System.out.println("CRIADA = " + Arrays.toString(gk.getPrivateKey().getEncoded()));
         } catch (NoSuchAlgorithmException e) {
             System.err.println(e.getMessage());
         }
@@ -69,6 +69,9 @@ public class Client extends Thread {
         json.put("type", tipo);
         json.put("id", this.name);
         json.put("time",currentTimeMillis());
+        System.out.println("CODIFICADA AINDA FORA DO JSON = " + Arrays.toString(this.gk.getPrivateKey().getEncoded()));
+        json.put("key",this.gk.getPublicKey().getEncoded());
+        json.put("key2",this.gk.getPrivateKey().getEncoded());
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);
         try {
             ms.send(messageOut);

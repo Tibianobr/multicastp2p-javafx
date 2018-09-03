@@ -8,7 +8,9 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import static sample.Main.ADDRESS;
 import static sample.Main.PORT;
@@ -18,12 +20,12 @@ public class Server extends Thread {
     InetAddress group;
     String name;
     byte[] buffer = new byte[10000];
-    List<String> ids_conectados;
+    Map<String,String> ids_conectados;
 
     public void configurar(InetAddress group, String name) {
         this.group = group;
         this.name = name;
-        this.ids_conectados = new ArrayList<>();
+        this.ids_conectados = new HashMap<>();
         }
 
     @Override
@@ -38,7 +40,7 @@ public class Server extends Thread {
         }
         JSONObject retorno = new JSONObject((new String(messageIn.getData())));
         if(retorno.get("type").equals("conexao")) {
-            ids_conectados.add(retorno.get("id").toString());
+            ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
         }
        // System.out.println("Server Received: " + new JSONObject((new String(messageIn.getData()))).get("msg"));
         try {

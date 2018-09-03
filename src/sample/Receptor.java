@@ -1,10 +1,20 @@
 package sample;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.PKCS8EncodedKeySpec;
+import java.security.spec.X509EncodedKeySpec;
+import java.util.Arrays;
 
 public class Receptor extends Thread {
     byte[] buffer = new byte[10000];
@@ -34,16 +44,38 @@ public class Receptor extends Thread {
             }
             JSONObject retorno = new JSONObject((new String(messageIn.getData())));
             if(retorno.get("type").equals("conexao")) {
-                client.ids_conectados.add(retorno.get("id").toString());
+                client.ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
+                JSONArray jsonArray = retorno.getJSONArray("key");
+                byte[] bytes_key = new byte[jsonArray.length()];
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    bytes_key[i]=(byte)(((int)jsonArray.get(i)) & 0xFF);
+                }
             }
-       //     System.out.println(name + " Received: " + new JSONObject((new String(messageIn.getData()))).get("msg"));
-
             try {
                 this.sleep(1500);
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }
             System.out.println(client.name + " conhece " + client.ids_conectados);
+
         }
     }
 }
+
+//try {
+//        PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(bytes_key));
+//        String cod = RSACryptography.encrypt(publicKey, "KRL AGORA VAI");
+//        System.out.println(RSACryptography.decrypt(client.gk.getPrivateKey(), cod));
+//        } catch (InvalidKeySpecException e) {
+//        e.printStackTrace();
+//        } catch (NoSuchAlgorithmException e) {
+//        e.printStackTrace();
+//        } catch (BadPaddingException e) {
+//        e.printStackTrace();
+//        } catch (IllegalBlockSizeException e) {
+//        e.printStackTrace();
+//        } catch (NoSuchPaddingException e) {
+//        e.printStackTrace();
+//        } catch (InvalidKeyException e) {
+//        e.printStackTrace();
+//        }
