@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.security.NoSuchAlgorithmException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -18,6 +19,8 @@ public class Client extends Thread {
     String name;
     Receptor receptor;
     List<String> ids_conectados;
+    GenerateKeys gk;
+
 
 
 
@@ -30,6 +33,14 @@ public class Client extends Thread {
             e.printStackTrace();
         }
         this.ids_conectados = new ArrayList<>();
+        try {
+            gk = new GenerateKeys(1024);
+            gk.createKeys();
+           // System.out.println(gk.getPrivateKey().getEncoded());
+          //  System.out.println(gk.getPublicKey().getEncoded());
+        } catch (NoSuchAlgorithmException e) {
+            System.err.println(e.getMessage());
+        }
         this.receptor = new Receptor(ms, name,this);
         this.receptor.start();
     }
