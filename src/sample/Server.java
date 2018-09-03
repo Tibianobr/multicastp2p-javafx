@@ -1,10 +1,14 @@
 package sample;
 
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static sample.Main.ADDRESS;
 import static sample.Main.PORT;
@@ -13,29 +17,36 @@ public class Server extends Thread {
     MulticastSocket ms;
     InetAddress group;
     String name;
-    byte[] buffer = new byte[1000];
+    byte[] buffer = new byte[10000];
+    List<String> ids_conectados;
 
     public void configurar(InetAddress group, String name) {
         this.group = group;
         this.name = name;
+        this.ids_conectados = new ArrayList<>();
         }
 
     @Override
     public void run() {
-             while (true) {
+        int i = 0;
+             while (i < 10) {
         DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
         try {
             ms.receive(messageIn);
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println("Received:" + new String(messageIn.getData()));
+        JSONObject retorno = new JSONObject((new String(messageIn.getData())));
+        if(retorno.get("type").equals("conexao")) {
+            ids_conectados.add(retorno.get("id").toString());
+        }
+       // System.out.println("Server Received: " + new JSONObject((new String(messageIn.getData()))).get("msg"));
         try {
-            System.out.println("sleep");
             this.sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
+        i++;
     }
     }
 
@@ -54,21 +65,6 @@ public class Server extends Thread {
         return this.group;
     }
 
-//     while (true) {
-//        DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
-//        try {
-//            ms.receive(messageIn);
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//        System.out.println("Received:" + new String(messageIn.getData()));
-//        try {
-//            System.out.println("sleep");
-//            this.sleep(1500);
-//        } catch (InterruptedException e) {
-//            e.printStackTrace();
-//        }
-//    }
 
 
 }

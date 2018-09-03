@@ -18,8 +18,9 @@ public class Simulador {
             Server servidor = new Server();
             InetAddress group = servidor.criarGrupo();
             servidor.configurar(group,"Server 01");
-            Client client = new Client(group, "client00");
+
             Client client1 = new Client(group, "client01");
+            Client client = new Client(group, "client00");
             Client client2 = new Client(group, "client02");
 
             servidor.start();
