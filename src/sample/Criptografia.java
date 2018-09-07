@@ -7,8 +7,8 @@ import javax.crypto.NoSuchPaddingException;
 import java.security.*;
 import java.util.Base64;
 
-public class RSACryptography {
-    public static String encrypt(Key key, String plaintext)
+public class Criptografia {
+    public static String encriptar(Key key, String plaintext)
             throws InvalidKeyException, NoSuchPaddingException,
             NoSuchAlgorithmException, BadPaddingException, IllegalBlockSizeException {
         Cipher cipher = Cipher.getInstance("RSA");
@@ -17,7 +17,7 @@ public class RSACryptography {
         return Base64.getEncoder().encodeToString(encrypted);
     }
 
-    public static String decrypt(Key key, String ciphertext)
+    public static String desencriptar(Key key, String ciphertext)
             throws NoSuchPaddingException, NoSuchAlgorithmException,
             InvalidKeyException, BadPaddingException, IllegalBlockSizeException {
         byte[] encrypted = Base64.getDecoder().decode(ciphertext);

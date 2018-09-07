@@ -31,9 +31,9 @@ public class Simulador {
             servidor.configurar(group, "Server 01");
 
             final CyclicBarrier initial_gate = new CyclicBarrier(3);
-            Client client1 = new Client(group, "client01", initial_gate);
-            Client client = new Client(group, "client00", initial_gate);
-            Client client2 = new Client(group, "client02", initial_gate);
+            Client client1 = new Client(group, "Cliente A", initial_gate);
+            Client client = new Client(group, "Cliente B", initial_gate);
+            Client client2 = new Client(group, "Cliente C", initial_gate);
 
             servidor.start();
 
@@ -68,9 +68,9 @@ public class Simulador {
 //                e.printStackTrace();
 //            }
             client1.start();
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.MILLISECONDS.sleep(1200);
             client.start();
-            TimeUnit.SECONDS.sleep(1);
+            TimeUnit.MILLISECONDS.sleep(1200);
             client2.start();
 
             //  s.leaveGroup(group);

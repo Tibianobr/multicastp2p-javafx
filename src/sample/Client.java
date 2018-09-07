@@ -22,7 +22,7 @@ public class Client extends Thread {
     Receptor receptor;
     Map<String,String> ids_conectados;
     GenerateKeys keyring;
-    CyclicBarrier initial_gate;
+    CyclicBarrier gate;
 
 
 
@@ -36,7 +36,7 @@ public class Client extends Thread {
             e.printStackTrace();
         }
         this.ids_conectados = new HashMap<>();
-        this.initial_gate = gate;
+        this.gate = gate;
         try {
             keyring = new GenerateKeys(1024);
             keyring.createKeys();
@@ -59,7 +59,7 @@ public class Client extends Thread {
     @Override
     public void run() {
         try {
-            initial_gate.await();
+            gate.await();
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         } catch (BrokenBarrierException ex) {
