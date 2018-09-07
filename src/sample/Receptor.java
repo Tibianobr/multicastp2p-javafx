@@ -51,12 +51,8 @@ public class Receptor extends Thread {
                     bytes_key[i]=(byte)(((int)jsonArray.get(i)) & 0xFF);
                 }
             }
-            try {
-                this.sleep(1500);
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            System.out.println(client.name + " conhece " + client.ids_conectados);
+            if (client.ids_conectados.size() == 3)
+            System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
 
         }
     }

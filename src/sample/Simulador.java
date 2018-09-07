@@ -13,6 +13,9 @@ import java.net.SocketException;
 import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 
 import static sample.Main.ADDRESS;
 import static sample.Main.PORT;
@@ -25,11 +28,12 @@ public class Simulador {
         try {
             Server servidor = new Server();
             InetAddress group = servidor.criarGrupo();
-            servidor.configurar(group,"Server 01");
+            servidor.configurar(group, "Server 01");
 
-            Client client1 = new Client(group, "client01");
-            //Client client = new Client(group, "client00");
-            //Client client2 = new Client(group, "client02");
+            final CyclicBarrier initial_gate = new CyclicBarrier(3);
+            Client client1 = new Client(group, "client01", initial_gate);
+            Client client = new Client(group, "client00", initial_gate);
+            Client client2 = new Client(group, "client02", initial_gate);
 
             servidor.start();
 
@@ -63,15 +67,19 @@ public class Simulador {
 //            } catch (IllegalBlockSizeException e) {
 //                e.printStackTrace();
 //            }
-             client1.start();
-          //  client.start();
-            //client2.start();
+            client1.start();
+            TimeUnit.SECONDS.sleep(1);
+            client.start();
+            TimeUnit.SECONDS.sleep(1);
+            client2.start();
 
-          //  s.leaveGroup(group);
+            //  s.leaveGroup(group);
 //        } catch (SocketException e) {
 //            System.out.println("Socket: " + e.getMessage());
 //        } catch (IOException e) {
 //            System.out.println("IO: " + e.getMessage());
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         } finally {
             if (s != null) s.close();
         }

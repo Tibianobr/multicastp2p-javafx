@@ -7,6 +7,8 @@ import java.net.MulticastSocket;
 import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
+import java.util.concurrent.BrokenBarrierException;
+import java.util.concurrent.CyclicBarrier;
 
 import org.json.*;
 
@@ -19,12 +21,13 @@ public class Client extends Thread {
     String name;
     Receptor receptor;
     Map<String,String> ids_conectados;
-    GenerateKeys gk;
+    GenerateKeys keyring;
+    CyclicBarrier initial_gate;
 
 
 
 
-    public Client(InetAddress group, String name) {
+    public Client(InetAddress group, String name, CyclicBarrier gate) {
         this.group = group;
         this.name = name;
         try {
@@ -33,11 +36,12 @@ public class Client extends Thread {
             e.printStackTrace();
         }
         this.ids_conectados = new HashMap<>();
+        this.initial_gate = gate;
         try {
-            gk = new GenerateKeys(1024);
-            gk.createKeys();
+            keyring = new GenerateKeys(1024);
+            keyring.createKeys();
            // System.out.println(gk.getPrivateKey().getEncoded());
-            System.out.println("CRIADA = " + Arrays.toString(gk.getPrivateKey().getEncoded()));
+            //System.out.println("CRIADA = " + Arrays.toString(keyring.getPrivateKey().getEncoded()));
         } catch (NoSuchAlgorithmException e) {
             System.err.println(e.getMessage());
         }
@@ -54,6 +58,12 @@ public class Client extends Thread {
     //JSON como padrão de transferencia de mensagens
     @Override
     public void run() {
+        try {
+            initial_gate.await();
+        } catch (InterruptedException ex) {
+            ex.printStackTrace();
+        } catch (BrokenBarrierException ex) {
+            ex.printStackTrace();}
         JSONObject my_obj = new JSONObject();
         my_obj.put("name", name);
         try {
@@ -69,9 +79,7 @@ public class Client extends Thread {
         json.put("type", tipo);
         json.put("id", this.name);
         json.put("time",currentTimeMillis());
-        System.out.println("CODIFICADA AINDA FORA DO JSON = " + Arrays.toString(this.gk.getPrivateKey().getEncoded()));
-        json.put("key",this.gk.getPublicKey().getEncoded());
-        json.put("key2",this.gk.getPrivateKey().getEncoded());
+        json.put("key",this.keyring.getPublicKey().getEncoded());
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);
         try {
             ms.send(messageOut);
