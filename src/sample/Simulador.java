@@ -1,26 +1,33 @@
 package sample;
 
-import java.io.IOException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.util.Arrays;
+import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
+import static sample.Main.WAITING;
+
 public class Simulador {
 
-    void simular(){
+    void simular() {
         MulticastSocket s = null;
         try {
             Server servidor = new Server();
             InetAddress group = servidor.criarGrupo();
-            servidor.configurar(group, "Server 01");
+            Recurso processador = new Recurso("Processador", WAITING);
+            Recurso memoria = new Recurso("Memória", WAITING);
+            List<Recurso> recursos = Arrays.asList(processador, memoria);
+
+            servidor.configurar(group, "Server 01", recursos);
 
             final CyclicBarrier initial_gate = new CyclicBarrier(3);
-            Client client1 = new Client(group, "Cliente A", initial_gate);
-            Client client = new Client(group, "Cliente B", initial_gate);
-            Client client2 = new Client(group, "Cliente C", initial_gate);
+            Client client1 = new Client(group, "Cliente A", initial_gate, recursos);
+            Client client = new Client(group, "Cliente B", initial_gate, recursos);
+            Client client2 = new Client(group, "Cliente C", initial_gate, recursos);
 
-            servidor.start();
+         //   servidor.start();
             TimeUnit.MILLISECONDS.sleep(500);
             client1.start();
             TimeUnit.MILLISECONDS.sleep(1200);

@@ -4,7 +4,6 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.security.Key;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
@@ -23,13 +22,16 @@ public class Client extends Thread {
     Map<String,String> ids_conectados;
     GenerateKeys keyring;
     CyclicBarrier gate;
+    List<Recurso> recursos;
 
 
 
 
-    public Client(InetAddress group, String name, CyclicBarrier gate) {
+
+    public Client(InetAddress group, String name, CyclicBarrier gate, List<Recurso> recursos) {
         this.group = group;
         this.name = name;
+        this.recursos = recursos;
         try {
             this.ms = new MulticastSocket(PORT);
         } catch (IOException e) {

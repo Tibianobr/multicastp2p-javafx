@@ -21,11 +21,13 @@ public class Server extends Thread {
     String name;
     byte[] buffer = new byte[10000];
     Map<String,String> ids_conectados;
+    List<Recurso> recursos;
 
-    public void configurar(InetAddress group, String name) {
+    public void configurar(InetAddress group, String name, List<Recurso> recursos) {
         this.group = group;
         this.name = name;
         this.ids_conectados = new HashMap<>();
+        this.recursos = recursos;
         }
 
     @Override
