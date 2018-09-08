@@ -9,6 +9,9 @@ import javafx.stage.Stage;
 public class Main extends Application {
     public final static int PORT = 6789;
     public final static String ADDRESS = "239.0.0.0";
+    public final static Integer WAITING = 1;
+    public final static Integer BUSY = 2;
+
 
     @Override
     public void start(Stage primaryStage) throws Exception{
