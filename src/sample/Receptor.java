@@ -45,7 +45,12 @@ public class Receptor extends Thread {
             }
             JSONObject retorno = new JSONObject((new String(messageIn.getData())));
             if(retorno.get("type").equals("conexao")) {
-                client.ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
+                // TODO CONSERTAR OS 400 ENVIOS DE CONEXAO AQUI
+                if (!client.ids_conectados.containsKey(retorno.get("id").toString()))
+                {
+                    client.ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
+                    client.enviar("","conexao");
+                }
                 JSONArray jsonArray = retorno.getJSONArray("key");
                 byte[] bytes_key = new byte[jsonArray.length()];
                 for (int i = 0; i < jsonArray.length(); i++) {
@@ -54,14 +59,15 @@ public class Receptor extends Thread {
             }
             else if (retorno.get("type").equals("request") && !retorno.get("id").equals(client.name))
             {
-                System.out.println(retorno.get("id").toString() + " com o request = " + retorno.get("request").toString());
+             //   System.out.println(retorno.get("id").toString() + " com o request = " + retorno.get("request").toString());
                 this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(),"response");
             }
             else if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name) && new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol))
             {
-                System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
+             //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
                 if (new JSONObject(retorno.get("response").toString()).get("response").equals("RELEASED"))
                 {
+                    //TODO LOGICA PARA IMPLEMENTAR O RECURSO NO CLIENT E TRATAR ESPERA NA FILA PARA OS RECURSOS
                     count++;
                     if (count == client.ids_conectados.size()-1)
                     {
@@ -70,8 +76,9 @@ public class Receptor extends Thread {
                     }
                 }
             }
-//            if (client.ids_conectados.size() == 3)
-//                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
+            if (client.ids_conectados.size() == 3 && retorno.get("type").equals("conexao"))
+                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
+
 
         }
     }

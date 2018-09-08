@@ -46,7 +46,7 @@ public class Server extends Thread {
         }
        // System.out.println("Server Received: " + new JSONObject((new String(messageIn.getData()))).get("msg"));
         try {
-            this.sleep(1500);
+            sleep(1500);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

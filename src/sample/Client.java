@@ -77,6 +77,7 @@ public class Client extends Thread {
     }
 
     public void enviar(String msg, String tipo) {
+        // TODO CRIPTOGRAFIA NA MENSAGEM COMO ASSINATURA DIGITAL
         JSONObject json = new JSONObject();
         json.put("msg", msg);
         json.put("type", tipo);
