@@ -1,19 +1,73 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import com.jfoenix.controls.JFXButton?>
+<?import javafx.scene.Cursor?>
+<?import javafx.scene.control.ChoiceBox?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
+<?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
-
+<?import javafx.scene.text.Font?>
+<?import javafx.scene.text.Text?>
 
 <AnchorPane prefHeight="503.0" prefWidth="987.0" xmlns="http://javafx.com/javafx/9.0.1" xmlns:fx="http://javafx.com/fxml/1" fx:controller="controllers.SampleController">
    <children>
-      <Pane layoutX="714.0" prefHeight="503.0" prefWidth="273.0">
+      <Pane layoutX="735.0" prefHeight="503.0" prefWidth="252.0">
          <children>
-            <JFXButton fx:id="adicionarCliente" layoutX="137.0" layoutY="412.0" text="Adicionar Cliente" />
-            <JFXButton fx:id="deletarCliente" layoutX="137.0" layoutY="454.0" text="Deletar Cliente" />
-            <JFXButton fx:id="solicitarRecurso" layoutX="139.0" layoutY="371.0" text="Solicitar Recurso" />
-            <JFXButton fx:id="botaoAuxiliar" layoutX="132.0" layoutY="322.0" text="Sei la oq vc quer" />
+            <JFXButton fx:id="addCliente" layoutX="119.0" layoutY="432.0" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Adicionar Cliente">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <JFXButton fx:id="removerCliente" layoutX="119.0" layoutY="468.0" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Deletar Cliente">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <ChoiceBox fx:id="selecionaCliente" layoutX="-2.0" layoutY="275.0" prefHeight="25.0" prefWidth="122.0">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ChoiceBox>
+            <TextField fx:id="nomeCliente" layoutX="-1.0" layoutY="432.0" prefHeight="25.0" prefWidth="122.0" promptText="Nome do Cliente" />
+            <JFXButton fx:id="solicitarRecurso1" layoutX="-2.0" layoutY="339.0" prefHeight="25.0" prefWidth="249.0" style="-fx-background-color: #c2c2c2;" text="Solicitar Recurso">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
+            <TextField fx:id="tempoUso" layoutX="183.0" layoutY="308.0" prefHeight="25.0" prefWidth="58.0" />
+            <Text layoutX="7.0" layoutY="325.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tempo de Utilização (segundos)" />
+            <ChoiceBox fx:id="selecionarCliente" layoutX="-3.0" layoutY="468.0" prefHeight="25.0" prefWidth="122.0" />
+            <Text layoutX="41.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="STATUS:" wrappingWidth="84.99998971819878">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Text>
+            <Text fx:id="status" layoutX="126.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="STATUS">
+               <font>
+                  <Font size="21.0" />
+               </font>
+            </Text>
+            <ChoiceBox fx:id="selecionaRecurso" layoutX="119.0" layoutY="275.0" prefHeight="25.0" prefWidth="122.0">
+               <cursor>
+                  <Cursor fx:constant="DEFAULT" />
+               </cursor>
+            </ChoiceBox>
+            <ScrollPane layoutY="43.0" prefHeight="211.0" prefWidth="243.0">
+              <content>
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="213.0" prefWidth="240.0" />
+              </content>
+            </ScrollPane>
          </children>
       </Pane>
+      <Pane layoutX="10.0" layoutY="8.0" prefHeight="482.0" prefWidth="703.0" style="-fx-background-color: #313131;">
+         <children>
+            <TextArea layoutX="14.0" layoutY="241.0" prefHeight="232.0" prefWidth="152.0" />
+            <Text layoutX="14.0" layoutY="235.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Buffer" />
+         </children>
+      </Pane>
+      <Separator layoutX="722.0" layoutY="14.0" orientation="VERTICAL" prefHeight="482.0" prefWidth="4.0" />
    </children>
 </AnchorPane>
