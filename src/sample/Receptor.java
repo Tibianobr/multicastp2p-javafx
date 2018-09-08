@@ -35,6 +35,7 @@ public class Receptor extends Thread {
     }
 
     private void escutar() {
+        int count = 0;
         while (true) {
             DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
             try {
@@ -59,6 +60,15 @@ public class Receptor extends Thread {
             else if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name) && new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol))
             {
                 System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
+                if (new JSONObject(retorno.get("response").toString()).get("response").equals("RELEASED"))
+                {
+                    count++;
+                    if (count == client.ids_conectados.size()-1)
+                    {
+                        count = 0;
+                        System.out.println("PODEMOS ALOCAR O RECURSO");
+                    }
+                }
             }
 //            if (client.ids_conectados.size() == 3)
 //                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
