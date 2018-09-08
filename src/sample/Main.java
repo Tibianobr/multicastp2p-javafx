@@ -9,9 +9,6 @@ import javafx.stage.Stage;
 public class Main extends Application {
     public final static int PORT = 6789;
     public final static String ADDRESS = "239.0.0.0";
-    public final static Integer BUSY = 2;
-    public final static Integer WAITING = 1;
-
 
     @Override
     public void start(Stage primaryStage) throws Exception{
@@ -21,7 +18,6 @@ public class Main extends Application {
         primaryStage.show();
         new Simulador().simular();
     }
-
 
 
     public static void main(String[] args) {

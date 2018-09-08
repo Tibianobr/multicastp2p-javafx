@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/Multicastp2p-withJavaFX.iml" filepath="$PROJECT_DIR$/Multicastp2p-withJavaFX.iml" />
+      <module fileurl="file://$PROJECT_DIR$/multicastp2p-javafx.iml" filepath="$PROJECT_DIR$/multicastp2p-javafx.iml" />
     </modules>
   </component>
 </project>
