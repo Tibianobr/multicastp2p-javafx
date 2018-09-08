@@ -1,29 +1,14 @@
 package sample;
 
-import org.json.JSONObject;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
-import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
-import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
-import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
-import static sample.Main.ADDRESS;
-import static sample.Main.PORT;
-
 public class Simulador {
-    //  args give message contents and destination multicast group (e.g. "228.5.6.7")
 
-    void simular() throws IOException {
+    void simular(){
         MulticastSocket s = null;
         try {
             Server servidor = new Server();
@@ -36,37 +21,7 @@ public class Simulador {
             Client client2 = new Client(group, "Cliente C", initial_gate);
 
             servidor.start();
-
-//                        GenerateKeys gk = null;
-//            try {
-//                gk = new GenerateKeys(1024);
-//                gk.createKeys();
-//                 System.out.println(gk.getPrivateKey().getEncoded());
-//                  System.out.println(gk.getPublicKey().getEncoded());
-//            } catch (NoSuchAlgorithmException e) {
-//                System.err.println(e.getMessage());
-//            }
-//            JSONObject json = new JSONObject();
-//            json.put("key",gk.getPublicKey().getEncoded());
-//            System.out.println(json.get("key"));
-//            try {
-//                String cod = RSACryptography.encrypt(gk.getPrivateKey(), "CRIPTOGRAFIA WOW");
-//                System.out.println(cod);
-//                PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec( ((byte[]) json.get("key"))));
-//                System.out.println(RSACryptography.decrypt(publicKey, cod));
-//            } catch (NoSuchAlgorithmException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeyException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchPaddingException e) {
-//                e.printStackTrace();
-//            } catch (BadPaddingException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeySpecException e) {
-//                e.printStackTrace();
-//            } catch (IllegalBlockSizeException e) {
-//                e.printStackTrace();
-//            }
+            TimeUnit.MILLISECONDS.sleep(500);
             client1.start();
             TimeUnit.MILLISECONDS.sleep(1200);
             client.start();
