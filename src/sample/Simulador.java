@@ -1,5 +1,7 @@
 package sample;
 
+import org.json.JSONObject;
+
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.util.Arrays;
@@ -16,8 +18,8 @@ public class Simulador {
         try {
             Server servidor = new Server();
             InetAddress group = servidor.criarGrupo();
-            Recurso processador = new Recurso("Processador", WAITING);
-            Recurso memoria = new Recurso("Memória", WAITING);
+            Recurso processador = new Recurso("Recurso 001", WAITING);
+            Recurso memoria = new Recurso("Recurso 002", WAITING);
             List<Recurso> recursos = Arrays.asList(processador, memoria);
 
             servidor.configurar(group, "Server 01", recursos);
@@ -34,6 +36,9 @@ public class Simulador {
             client.start();
             TimeUnit.MILLISECONDS.sleep(1200);
             client2.start();
+
+            TimeUnit.MILLISECONDS.sleep(1200);
+            client.enviar("Recurso 001","request");
 
             //  s.leaveGroup(group);
 //        } catch (SocketException e) {

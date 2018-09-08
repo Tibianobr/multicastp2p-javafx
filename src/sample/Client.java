@@ -19,19 +19,19 @@ public class Client extends Thread {
     InetAddress group;
     String name;
     Receptor receptor;
-    Map<String,String> ids_conectados;
+    Map<String, String> ids_conectados;
     GenerateKeys keyring;
     CyclicBarrier gate;
     List<Recurso> recursos;
-
-
-
+    String status;
+    Long protocol;
 
 
     public Client(InetAddress group, String name, CyclicBarrier gate, List<Recurso> recursos) {
         this.group = group;
         this.name = name;
         this.recursos = recursos;
+        this.status = "RELEASED";
         try {
             this.ms = new MulticastSocket(PORT);
         } catch (IOException e) {
@@ -42,18 +42,18 @@ public class Client extends Thread {
         try {
             keyring = new GenerateKeys(1024);
             keyring.createKeys();
-           // System.out.println(gk.getPrivateKey().getEncoded());
+            // System.out.println(gk.getPrivateKey().getEncoded());
             //System.out.println("CRIADA = " + Arrays.toString(keyring.getPrivateKey().getEncoded()));
         } catch (NoSuchAlgorithmException e) {
             System.err.println(e.getMessage());
         }
-        this.receptor = new Receptor(ms, name,this);
+        this.receptor = new Receptor(ms, name, this);
         this.receptor.start();
     }
 
     private void joinGroup() throws IOException {
         ms.joinGroup(group);
-        enviar(this.name + " entrou no grupo!","conexao");
+        enviar(this.name + " entrou no grupo!", "conexao");
     }
 
 
@@ -65,7 +65,8 @@ public class Client extends Thread {
         } catch (InterruptedException ex) {
             ex.printStackTrace();
         } catch (BrokenBarrierException ex) {
-            ex.printStackTrace();}
+            ex.printStackTrace();
+        }
         JSONObject my_obj = new JSONObject();
         my_obj.put("name", name);
         try {
@@ -80,8 +81,17 @@ public class Client extends Thread {
         json.put("msg", msg);
         json.put("type", tipo);
         json.put("id", this.name);
-        json.put("time",currentTimeMillis());
-        json.put("key",this.keyring.getPublicKey().getEncoded());
+        json.put("time", currentTimeMillis());
+        if (tipo.equals("conexao"))
+            json.put("key", this.keyring.getPublicKey().getEncoded());
+        else if (tipo.equals("request")) {
+            Request r = new Request(this.name, msg, 200);
+            json.put("request", r.toString());
+            this.status = "WANTED";
+            this.protocol = r.getProtocol();
+        } else if (tipo.equals("response")) {
+            json.put("response", new Response(Long.parseLong(msg), this.status).toString());
+        }
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);
         try {
             ms.send(messageOut);

@@ -51,8 +51,17 @@ public class Receptor extends Thread {
                     bytes_key[i]=(byte)(((int)jsonArray.get(i)) & 0xFF);
                 }
             }
-            if (client.ids_conectados.size() == 3)
-            System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
+            else if (retorno.get("type").equals("request") && !retorno.get("id").equals(client.name))
+            {
+                System.out.println(retorno.get("id").toString() + " com o request = " + retorno.get("request").toString());
+                this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(),"response");
+            }
+            else if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name) && new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol))
+            {
+                System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
+            }
+//            if (client.ids_conectados.size() == 3)
+//                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
 
         }
     }
