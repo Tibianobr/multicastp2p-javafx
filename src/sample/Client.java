@@ -8,7 +8,9 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.json.*;
 
 import static java.lang.System.currentTimeMillis;
@@ -27,6 +29,7 @@ public class Client extends Thread {
     Long protocol;
     Long protocol_time;
     Map<Long,Long> queue;
+    StopWatch stopWatch;
 
 
     public Client(InetAddress group, String name, CyclicBarrier gate, Manager recursos) {
@@ -34,6 +37,7 @@ public class Client extends Thread {
         this.name = name;
         this.recursos = recursos;
         this.status = "RELEASED";
+        stopWatch = new StopWatch();
         try {
             this.ms = new MulticastSocket(PORT);
         } catch (IOException e) {
@@ -98,7 +102,13 @@ public class Client extends Thread {
             }
                 json.put("request", r.toString());
             this.protocol = r.getProtocol();
-        } else if (tipo.equals("response")) {
+            if (!this.stopWatch.isStarted())
+                this.stopWatch.start();
+            else {
+                this.stopWatch.reset();
+                this.stopWatch.start();
+            }
+            } else if (tipo.equals("response")) {
             json.put("response", new Response(Long.parseLong(msg), this.status,this.protocol_time).toString());
         }
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);

@@ -1,5 +1,6 @@
 package sample;
 
+import org.apache.commons.collections4.CollectionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -14,7 +15,11 @@ import java.security.*;
 import java.security.spec.InvalidKeySpecException;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
+
+import static sample.Main.TIMEOUT;
 
 public class Receptor extends Thread {
     byte[] buffer = new byte[10000];
@@ -38,8 +43,18 @@ public class Receptor extends Thread {
         int count_RELEASED = 0;
         int count_HELD = 0;
         int num_clientes_checados = 0;
+        List<String> lista_respostas = new ArrayList<>();
         Recurso current = null;
         while (true) {
+            if(this.client.stopWatch.getTime() > TIMEOUT)
+            {
+                lista_respostas.add(this.client.name);
+                System.out.println(client.name + " deu TIMEOUT em " + CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas));
+                for (String nome: CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas)) {
+                    client.ids_conectados.remove(nome);
+                }
+                client.stopWatch.reset();
+            }
             current = null;
             DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
             try {
@@ -88,16 +103,20 @@ public class Receptor extends Thread {
             }
             else if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name) && new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)){
                     num_clientes_checados++;
+                    lista_respostas.add(retorno.get("id").toString());
                     //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
                     if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED")) {
                         //TODO TRATAR ESPERA NA FILA PARA OS RECURSOS
                         count_RELEASED++;
                         if (count_RELEASED == client.ids_conectados.size() - 1) {
+                            if(this.client.stopWatch.isStarted())
+                                this.client.stopWatch.suspend();
                             count_RELEASED = 0;
                             System.out.println(client.name + " PODEMOS ALOCAR O RECURSO");
                             current = client.recursos.getfirstFree();
                             if (current != null)
                                 current.utilizarRecurso(client, 10000);
+                            lista_respostas.clear();
                         }
                     } else if (new JSONObject(retorno.get("response").toString()).get("status").equals("HELD")) {
                         count_HELD++;
@@ -109,39 +128,48 @@ public class Receptor extends Thread {
                             current = new Recurso("a",1);
                             if (this.client.status != "HELD")
                                 this.client.status = "WANTED";
+                            lista_respostas.clear();
+                            this.client.stopWatch.suspend();
                             this.client.protocol_time = System.currentTimeMillis();
                         }
                     } else if (new JSONObject(retorno.get("response").toString()).get("status").equals("WANTED")) {
                         if (client.protocol_time < new JSONObject(retorno.get("response").toString()).getLong("protocol_time")) {
                             count_RELEASED++;
                             if (count_RELEASED == client.ids_conectados.size() - 1) {
+                                this.client.stopWatch.suspend();
                                 count_RELEASED = 0;
                                 System.out.println(client.name + " PODEMOS ALOCAR O RECURSO");
                                 current = client.recursos.getfirstFree();
                                 if (current != null)
                                     current.utilizarRecurso(client, 10000);
+                                lista_respostas.clear();
+
                             }
                         } else {
                             count_HELD++;
                             if (count_HELD == client.recursos.size) {
+                                this.client.stopWatch.suspend();
                                 //TODO DROP PROTOCOL e RESET DOS CONTADORES
                                 count_HELD = 0;
                                 count_RELEASED = 0;
                                 current = new Recurso("a",1);
                                 if (this.client.status != "HELD")
                                     this.client.status = "WANTED";
+                                lista_respostas.clear();
                                 this.client.protocol_time = System.currentTimeMillis();
                             }
                         }
                     }
-                        System.out.println(num_clientes_checados);
                     if (num_clientes_checados == client.ids_conectados.size() - 1 && current == null)
                     {
+                        if (this.client.stopWatch.isStarted())
+                            this.client.stopWatch.suspend();
                         System.out.println(client.name + "   ALOCA");
                         num_clientes_checados = 0;
                         current = client.recursos.getfirstFree();
                         if (current != null)
                             current.utilizarRecurso(client, 10000);
+                        lista_respostas.clear();
                         count_HELD = 0;
                         count_RELEASED = 0;
                     }

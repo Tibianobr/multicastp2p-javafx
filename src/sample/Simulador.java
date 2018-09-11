@@ -1,5 +1,6 @@
 package sample;
 
+import org.apache.commons.lang3.time.StopWatch;
 import org.json.JSONObject;
 
 import java.net.InetAddress;
@@ -38,6 +39,12 @@ public class Simulador {
             TimeUnit.MILLISECONDS.sleep(1200);
             client2.start();
 
+
+            StopWatch stopWatch = new StopWatch();
+            stopWatch.start();
+            TimeUnit.SECONDS.sleep(2);
+            //stopWatch.suspend();
+            System.out.println(stopWatch.getTime());
             TimeUnit.MILLISECONDS.sleep(1200);
             client.enviar("-1","request");
             TimeUnit.MILLISECONDS.sleep(1000);
