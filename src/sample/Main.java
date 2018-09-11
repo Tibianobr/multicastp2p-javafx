@@ -15,10 +15,10 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
-        Parent root = FXMLLoader.load(getClass().getResource("../resources/sample.fxml"));
-        primaryStage.setTitle("Sistemas Recursos Compartilhados");
-        primaryStage.setScene(new Scene(root, 987, 503));
-        primaryStage.show();
+       // Parent root = FXMLLoader.load(getClass().getResource("../resources/sample.fxml"));
+       // primaryStage.setTitle("Sistemas Recursos Compartilhados");
+       // primaryStage.setScene(new Scene(root, 987, 503));
+       // primaryStage.show();
         new Simulador().simular();
     }
 

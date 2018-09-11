@@ -21,13 +21,14 @@ public class Simulador {
             Recurso processador = new Recurso("Recurso 001", WAITING);
             Recurso memoria = new Recurso("Recurso 002", WAITING);
             List<Recurso> recursos = Arrays.asList(processador, memoria);
+            Manager manager = new Manager(recursos);
 
-            servidor.configurar(group, "Server 01", recursos);
+            servidor.configurar(group, "Server 01", manager);
 
             final CyclicBarrier initial_gate = new CyclicBarrier(3);
-            Client client1 = new Client(group, "Cliente A", initial_gate, recursos);
-            Client client = new Client(group, "Cliente B", initial_gate, recursos);
-            Client client2 = new Client(group, "Cliente C", initial_gate, recursos);
+            Client client1 = new Client(group, "Cliente A", initial_gate, manager);
+            Client client = new Client(group, "Cliente B", initial_gate, manager);
+            Client client2 = new Client(group, "Cliente C", initial_gate, manager);
 
          //   servidor.start();
             TimeUnit.MILLISECONDS.sleep(500);

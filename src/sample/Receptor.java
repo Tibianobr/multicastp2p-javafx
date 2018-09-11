@@ -35,7 +35,8 @@ public class Receptor extends Thread {
     }
 
     private void escutar() {
-        int count = 0;
+        int count_RELEASED = 0;
+        int count_HELD = 0;
         while (true) {
             DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
             try {
@@ -68,16 +69,34 @@ public class Receptor extends Thread {
                 if (new JSONObject(retorno.get("response").toString()).get("response").equals("RELEASED"))
                 {
                     //TODO LOGICA PARA IMPLEMENTAR O RECURSO NO CLIENT E TRATAR ESPERA NA FILA PARA OS RECURSOS
-                    count++;
-                    if (count == client.ids_conectados.size()-1)
+                    count_RELEASED++;
+                    if (count_RELEASED == client.ids_conectados.size()-1)
                     {
-                        count = 0;
+                        count_RELEASED = 0;
                         System.out.println("PODEMOS ALOCAR O RECURSO");
+                        Recurso current = client.recursos.getfirstFree();
+                        if (current != null)
+                            current.utilizarRecurso(client, 10000);
                     }
                 }
+                else if(new JSONObject(retorno.get("response").toString()).get("response").equals("HELD"))
+                {
+                    count_HELD++;
+
+                    if(count_HELD == client.recursos.size)
+                    {
+                        //TODO DROP PROTOCOL e RESET DOS CONTADORES
+                        count_HELD = 0;
+                        count_RELEASED = 0;
+                    }
+                }
+                else if(new JSONObject(retorno.get("response").toString()).get("response").equals("WANTED"))
+                {
+                    //TODO LOGICA DA ESPERA AQUI
+                }
             }
-            if (client.ids_conectados.size() == 3 && retorno.get("type").equals("conexao"))
-                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
+//            if (client.ids_conectados.size() == 3 && retorno.get("type").equals("conexao"))
+//                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
 
 
         }

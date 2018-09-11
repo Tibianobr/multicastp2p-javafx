@@ -22,12 +22,12 @@ public class Client extends Thread {
     Map<String, String> ids_conectados;
     GenerateKeys keyring;
     CyclicBarrier gate;
-    List<Recurso> recursos;
+    Manager recursos;
     String status;
     Long protocol;
 
 
-    public Client(InetAddress group, String name, CyclicBarrier gate, List<Recurso> recursos) {
+    public Client(InetAddress group, String name, CyclicBarrier gate, Manager recursos) {
         this.group = group;
         this.name = name;
         this.recursos = recursos;
