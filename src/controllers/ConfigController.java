@@ -9,6 +9,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Circle;
+import sample.Main;
 
 
 public class ConfigController {
@@ -16,7 +17,9 @@ public class ConfigController {
     @FXML
     private TextField tempoResposta;
 
-    public void iniciarSimulacao() {
+    public void changeScreen() {
         System.out.println("OK");
+
+        Main.changeScreen("Sample");
     }
 }
