@@ -41,7 +41,7 @@ public class Recurso{
     {
         this.setCurrent(cliente);
         this.status = BUSY;
-        cliente.status = "BUSY";
+        current.status = "HELD";
         new java.util.Timer().schedule(
                 new java.util.TimerTask() {
                     @Override
@@ -57,6 +57,7 @@ public class Recurso{
     public void sairDoRecurso()
     {
         this.current.status = "RELEASED";
+        this.current.enviar("","freedom");
         this.setCurrent(null);
         this.status = WAITING;
     }

@@ -5,7 +5,7 @@ import org.json.JSONObject;
 public class Request {
     private Long protocol;
     private String criador;
-    private String recurso;
+    private Long protocol_time;
     private Integer tempo;
 
 
@@ -16,14 +16,14 @@ public class Request {
         this.protocol = System.currentTimeMillis();
         json.put("protocol", this.protocol);
         json.put("criador", criador);
-        json.put("recurso", recurso);
+        json.put("protocol_time", protocol_time);
         json.put("tempo",tempo);
         return json.toString();
     }
 
-    public Request(String criador, String recurso, Integer tempo) {
+    public Request(String criador, Long protocol_time, Integer tempo) {
         this.criador = criador;
-        this.recurso = recurso;
+        this.protocol_time = protocol_time;
         this.tempo = tempo;
     }
 
@@ -36,12 +36,12 @@ public class Request {
         this.criador = criador;
     }
 
-    public String getRecurso() {
-        return recurso;
+    public Long getProtocol_time() {
+        return protocol_time;
     }
 
-    public void setRecurso(String recurso) {
-        this.recurso = recurso;
+    public void setProtocol_time(Long protocol_time) {
+        this.protocol_time = protocol_time;
     }
 
     public Integer getTempo() {

@@ -26,8 +26,8 @@ public class Simulador {
             servidor.configurar(group, "Server 01", manager);
 
             final CyclicBarrier initial_gate = new CyclicBarrier(3);
-            Client client1 = new Client(group, "Cliente A", initial_gate, manager);
-            Client client = new Client(group, "Cliente B", initial_gate, manager);
+            Client client = new Client(group, "Cliente A", initial_gate, manager);
+            Client client1 = new Client(group, "Cliente B", initial_gate, manager);
             Client client2 = new Client(group, "Cliente C", initial_gate, manager);
 
          //   servidor.start();
@@ -39,9 +39,17 @@ public class Simulador {
             client2.start();
 
             TimeUnit.MILLISECONDS.sleep(1200);
-            client.enviar("Recurso 001","request");
+            client.enviar("-1","request");
+            TimeUnit.MILLISECONDS.sleep(1000);
+            client1.enviar("-1","request");
+            TimeUnit.MILLISECONDS.sleep(1000);
+            client2.enviar("-1","request");
+            TimeUnit.MILLISECONDS.sleep(10000);
+            client.enviar("-1","request");
+            TimeUnit.MILLISECONDS.sleep(10000);
+            client1.enviar("-1","request");
 
-            client2.leaveGroup();
+            //client2.leaveGroup();
 
             //  s.leaveGroup(group);
 //        } catch (SocketException e) {

@@ -25,6 +25,7 @@ public class Client extends Thread {
     Manager recursos;
     String status;
     Long protocol;
+    Long protocol_time;
     Map<Long,Long> queue;
 
 
@@ -79,6 +80,7 @@ public class Client extends Thread {
 
     public void enviar(String msg, String tipo) {
         // TODO CRIPTOGRAFIA NA MENSAGEM COMO ASSINATURA DIGITAL
+        Request r = null;
         JSONObject json = new JSONObject();
         json.put("msg", msg);
         json.put("type", tipo);
@@ -87,12 +89,17 @@ public class Client extends Thread {
         if (tipo.equals("conexao"))
             json.put("key", this.keyring.getPublicKey().getEncoded());
         else if (tipo.equals("request")) {
-            Request r = new Request(this.name, msg, 200);
-            json.put("request", r.toString());
-            this.status = "WANTED";
+            if (Long.parseLong(msg) != -1) {
+                r = new Request(this.name, Long.parseLong(msg), 200);
+            }
+            else {
+                this.protocol_time = System.currentTimeMillis();
+                r = new Request(this.name, protocol_time, 200);
+            }
+                json.put("request", r.toString());
             this.protocol = r.getProtocol();
         } else if (tipo.equals("response")) {
-            json.put("response", new Response(Long.parseLong(msg), this.status).toString());
+            json.put("response", new Response(Long.parseLong(msg), this.status,this.protocol_time).toString());
         }
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);
         try {
