@@ -106,7 +106,6 @@ public class Receptor extends Thread {
                     lista_respostas.add(retorno.get("id").toString());
                     //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
                     if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED")) {
-                        //TODO TRATAR ESPERA NA FILA PARA OS RECURSOS
                         count_RELEASED++;
                         if (count_RELEASED == client.ids_conectados.size() - 1) {
                             if(this.client.stopWatch.isStarted())
