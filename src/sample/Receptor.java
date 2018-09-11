@@ -47,7 +47,6 @@ public class Receptor extends Thread {
             JSONObject retorno = new JSONObject((new String(messageIn.getData())));
             System.out.println(retorno);
             if(retorno.get("type").equals("conexao")) {
-                // TODO CONSERTAR OS 400 ENVIOS DE CONEXAO AQUI
                 if (!client.ids_conectados.containsKey(retorno.get("id").toString()))
                 {
                     client.ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
@@ -59,6 +58,10 @@ public class Receptor extends Thread {
                     bytes_key[i]=(byte)(((int)jsonArray.get(i)) & 0xFF);
                 }
             }
+            else if (retorno.get("type").equals("desconexao"))
+            {
+                this.client.ids_conectados.remove(retorno.get("id"));
+            }
             else if (retorno.get("type").equals("request") && !retorno.get("id").equals(client.name))
             {
              //   System.out.println(retorno.get("id").toString() + " com o request = " + retorno.get("request").toString());
@@ -69,7 +72,7 @@ public class Receptor extends Thread {
              //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
                 if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED"))
                 {
-                    //TODO LOGICA PARA IMPLEMENTAR O RECURSO NO CLIENT E TRATAR ESPERA NA FILA PARA OS RECURSOS
+                    //TODO TRATAR ESPERA NA FILA PARA OS RECURSOS
                     count_RELEASED++;
                     if (count_RELEASED == client.ids_conectados.size()-1)
                     {
@@ -98,6 +101,8 @@ public class Receptor extends Thread {
             }
 //            if (client.ids_conectados.size() == 3 && retorno.get("type").equals("conexao"))
 //                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
+            if (!retorno.get("type").equals("desconexao"))
+            System.out.println(client.name + " LISTA = " +client.ids_conectados.keySet());
 
 
         }

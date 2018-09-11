@@ -25,6 +25,7 @@ public class Client extends Thread {
     Manager recursos;
     String status;
     Long protocol;
+    Map<Long,Long> queue;
 
 
     public Client(InetAddress group, String name, CyclicBarrier gate, Manager recursos) {
@@ -96,6 +97,16 @@ public class Client extends Thread {
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);
         try {
             ms.send(messageOut);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void leaveGroup()
+    {
+        this.enviar("", "desconexao");
+        try {
+            this.ms.leaveGroup(this.group);
         } catch (IOException e) {
             e.printStackTrace();
         }

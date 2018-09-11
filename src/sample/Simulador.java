@@ -41,6 +41,8 @@ public class Simulador {
             TimeUnit.MILLISECONDS.sleep(1200);
             client.enviar("Recurso 001","request");
 
+            client2.leaveGroup();
+
             //  s.leaveGroup(group);
 //        } catch (SocketException e) {
 //            System.out.println("Socket: " + e.getMessage());
