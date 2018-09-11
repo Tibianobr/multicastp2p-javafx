@@ -22,7 +22,7 @@ public class Main extends Application {
 
         stage = primaryStage;
 
-        primaryStage.setTitle("Exline Clínica e Estética");
+        primaryStage.setTitle("Configuração SD01");
 
         Parent fxmlLogin = FXMLLoader.load(getClass().getResource("/resources/config.fxml"));
         Config = new Scene(fxmlLogin);

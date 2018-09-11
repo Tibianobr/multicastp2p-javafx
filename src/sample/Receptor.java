@@ -45,6 +45,7 @@ public class Receptor extends Thread {
                 e.printStackTrace();
             }
             JSONObject retorno = new JSONObject((new String(messageIn.getData())));
+            System.out.println(retorno);
             if(retorno.get("type").equals("conexao")) {
                 // TODO CONSERTAR OS 400 ENVIOS DE CONEXAO AQUI
                 if (!client.ids_conectados.containsKey(retorno.get("id").toString()))
@@ -66,7 +67,7 @@ public class Receptor extends Thread {
             else if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name) && new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol))
             {
              //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
-                if (new JSONObject(retorno.get("response").toString()).get("response").equals("RELEASED"))
+                if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED"))
                 {
                     //TODO LOGICA PARA IMPLEMENTAR O RECURSO NO CLIENT E TRATAR ESPERA NA FILA PARA OS RECURSOS
                     count_RELEASED++;
@@ -79,7 +80,7 @@ public class Receptor extends Thread {
                             current.utilizarRecurso(client, 10000);
                     }
                 }
-                else if(new JSONObject(retorno.get("response").toString()).get("response").equals("HELD"))
+                else if(new JSONObject(retorno.get("response").toString()).get("status").equals("HELD"))
                 {
                     count_HELD++;
 
@@ -90,7 +91,7 @@ public class Receptor extends Thread {
                         count_RELEASED = 0;
                     }
                 }
-                else if(new JSONObject(retorno.get("response").toString()).get("response").equals("WANTED"))
+                else if(new JSONObject(retorno.get("response").toString()).get("status").equals("WANTED"))
                 {
                     //TODO LOGICA DA ESPERA AQUI
                 }

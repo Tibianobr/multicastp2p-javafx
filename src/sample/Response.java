@@ -4,20 +4,20 @@ import org.json.JSONObject;
 
 public class Response {
     private Long protocol;
-    private String response;
+    private String status;
 
 
     public String toString()
     {
         JSONObject json = new JSONObject();
         json.put("protocol",this.protocol);
-        json.put("response",this.response);
+        json.put("status",this.status);
         return json.toString();
     }
 
     public Response(Long protocol, String response) {
         this.protocol = protocol;
-        this.response = response;
+        this.status = response;
     }
 
     public Long getProtocol() {
@@ -28,11 +28,11 @@ public class Response {
         this.protocol = protocol;
     }
 
-    public String getResponse() {
-        return response;
+    public String getStatus() {
+        return status;
     }
 
-    public void setResponse(String response) {
-        this.response = response;
+    public void setStatus(String response) {
+        this.status = response;
     }
 }
