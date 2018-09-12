@@ -6,6 +6,8 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
+import java.util.concurrent.TimeUnit;
+
 public class Main extends Application {
     public final static int PORT = 6789;
     public final static String ADDRESS = "239.0.0.0";
@@ -34,7 +36,7 @@ public class Main extends Application {
         primaryStage.setTitle("Sistemas Recursos Compartilhados");
         primaryStage.setScene(Config);
         primaryStage.show();
-        new Simulador().simular();
+        TimeUnit.SECONDS.sleep(2);
     }
 
     public static void changeScreen(String scr){

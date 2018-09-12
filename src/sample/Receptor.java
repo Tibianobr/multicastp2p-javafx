@@ -1,12 +1,19 @@
 package sample;
 
+import javafx.fxml.FXML;
+import javafx.scene.shape.Circle;
 import org.apache.commons.collections4.CollectionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
+import javafx.scene.paint.Color;
+import java.util.ArrayList;
+
+
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
+import java.awt.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
@@ -19,6 +26,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
+import static java.awt.Color.ORANGE;
 import static sample.Main.TIMEOUT;
 
 public class Receptor extends Thread {
@@ -26,6 +34,9 @@ public class Receptor extends Thread {
     MulticastSocket ms;
     String name;
     Client client;
+
+    @FXML
+    public Circle imgCliente2;
 
     public Receptor(MulticastSocket ms, String name, Client client)
     {
@@ -125,9 +136,10 @@ public class Receptor extends Thread {
                             count_HELD = 0;
                             count_RELEASED = 0;
                             current = new Recurso("a",1);
-                            if (this.client.status != "HELD")
+                            if (this.client.status != "HELD") {
                                 this.client.status = "WANTED";
-                            lista_respostas.clear();
+                            }
+                                lista_respostas.clear();
                             this.client.stopWatch.suspend();
                             this.client.protocol_time = System.currentTimeMillis();
                         }

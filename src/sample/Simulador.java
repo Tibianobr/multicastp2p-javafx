@@ -14,7 +14,7 @@ import static sample.Main.WAITING;
 
 public class Simulador {
 
-    void simular() {
+    public void simular() {
         MulticastSocket s = null;
         try {
             Server servidor = new Server();

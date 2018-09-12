@@ -88,25 +88,25 @@
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="498.0" layoutY="358.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="498.0" layoutY="321.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
             <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="498.0" layoutY="281.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
-            <Circle fx:id="imgCliente1" fill="#b1ff1f" layoutX="92.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-            <Circle fx:id="imgCliente2" fill="#b1ff1f" layoutX="272.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+            <Circle fx:id="imgCliente1" fill="#ff2121" layoutX="92.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" />
+            <Circle fx:id="imgCliente2" fill="#ff2121" layoutX="272.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fx:id="imgCliente4" fill="#b1ff1f" layoutX="599.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="imgCliente5" fill="#b1ff1f" layoutX="92.0" layoutY="163.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="imgCliente6" fill="#b1ff1f" layoutX="272.0" layoutY="163.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="imgCliente8" fill="#b1ff1f" layoutX="599.0" layoutY="163.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-            <Circle fx:id="imgCliente3" fill="#b1ff1f" layoutX="441.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
+            <Circle fx:id="imgCliente3" fill="#ff2121" layoutX="441.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" />
             <Circle fx:id="imgCliente7" fill="#b1ff1f" layoutX="441.0" layoutY="163.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
-            <Label fx:id="textoCliente1" alignment="CENTER" layoutX="56.0" layoutY="95.0" prefHeight="17.0" prefWidth="72.0">
+            <Label fx:id="textoCliente1" alignment="CENTER" layoutX="56.0" layoutY="95.0" prefHeight="17.0" prefWidth="72.0" text="Cliente A">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label fx:id="textoCliente2" alignment="CENTER" layoutX="236.0" layoutY="95.0" prefHeight="17.0" prefWidth="72.0" textAlignment="CENTER">
+            <Label fx:id="textoCliente2" alignment="CENTER" layoutX="236.0" layoutY="95.0" prefHeight="17.0" prefWidth="72.0" text="Cliente B" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Label>
-            <Label fx:id="textoCliente3" alignment="CENTER" layoutX="405.0" layoutY="95.0" prefHeight="17.0" prefWidth="72.0" textAlignment="CENTER">
+            <Label fx:id="textoCliente3" alignment="CENTER" layoutX="405.0" layoutY="95.0" prefHeight="17.0" prefWidth="72.0" text="Cliente C" textAlignment="CENTER">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>

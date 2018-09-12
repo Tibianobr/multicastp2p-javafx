@@ -10,6 +10,7 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.shape.Circle;
 import sample.Main;
+import sample.Simulador;
 
 
 public class ConfigController {
@@ -19,7 +20,7 @@ public class ConfigController {
 
     public void changeScreen() {
         System.out.println("OK");
-
         Main.changeScreen("Sample");
+        new Simulador().simular();
     }
 }
