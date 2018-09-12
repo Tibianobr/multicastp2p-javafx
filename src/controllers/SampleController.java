@@ -96,40 +96,40 @@ public class SampleController{
             imgCliente4.setVisible(true);
             imgCliente4.setFill(Color.RED);
             count++;
-            Client client4 = new Client(group, "Cliente E", null, manager);
-            client4.start();
+            client3 = new Client(group, nomeCliente.getText(), null, manager);
+            client3.start();
         }
         else if(count == 4) {
             textoCliente5.setText(nomeCliente.getText());
             imgCliente5.setVisible(true);
             imgCliente5.setFill(Color.RED);
             count++;
-            Client client5 = new Client(group, "Cliente F", null, manager);
-            client5.start();
+            client4 = new Client(group, nomeCliente.getText(), null, manager);
+            client4.start();
         }
         else if(count == 5) {
             textoCliente6.setText(nomeCliente.getText());
             imgCliente6.setVisible(true);
             imgCliente6.setFill(Color.RED);
             count++;
-            Client client6 = new Client(group, "Cliente G", null, manager);
-            client6.start();
+            client5 = new Client(group, nomeCliente.getText(), null, manager);
+            client5.start();
         }
         else if(count == 6) {
             textoCliente7.setText(nomeCliente.getText());
             imgCliente7.setVisible(true);
             imgCliente7.setFill(Color.RED);
             count++;
-            Client client7 = new Client(group, "Cliente H", null, manager);
-            client7.start();
+            Client client6 = new Client(group, nomeCliente.getText(), null, manager);
+            client6.start();
         }
         else if(count == 7) {
             textoCliente8.setText(nomeCliente.getText());
             imgCliente8.setVisible(true);
             imgCliente8.setFill(Color.RED);
             count++;
-            Client client8 = new Client(group, "Cliente I", null, manager);
-            client8.start();
+            client7 = new Client(group, nomeCliente.getText(), null, manager);
+            client7.start();
         }
         else if(count == 8){
             JOptionPane.showMessageDialog(null, "Numero maximo de clientes atingido");
@@ -171,6 +171,7 @@ public class SampleController{
         else if(selecionado == textoCliente4.getText()) {
             imgCliente4.setFill(Color.ORANGE);
             TimeUnit.SECONDS.sleep(1);
+            System.out.println(client3);
             client3.request_time = Integer.parseInt(tempoUso.getText())* 1000;
            // log.setText(textoCliente4.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client3.enviar("-1", "request");
@@ -200,6 +201,107 @@ public class SampleController{
             client7.request_time = Integer.parseInt(tempoUso.getText()) * 1000;
             // log.setText(textoCliente8.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client7.enviar("-1", "request");
+        }
+    }
+
+    public void removerCliente() throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, InterruptedException {
+        String opcao = selecionaClienteDelete.getValue();
+
+        if(opcao == textoCliente1.getText())
+        {
+            textoCliente1.setText(null);
+            imgCliente1.setVisible(false);
+
+            client.leaveGroup();
+        }
+        else if(opcao == textoCliente2.getText())
+        {
+            textoCliente2.setText(null);
+            imgCliente2.setVisible(false);
+
+            client1.leaveGroup();
+        }
+        else if(opcao == textoCliente3.getText())
+        {
+            textoCliente3.setText(null);
+            imgCliente3.setVisible(false);
+
+            client2.leaveGroup();
+        }
+        else if(opcao == textoCliente4.getText())
+        {
+            textoCliente4.setText(null);
+            imgCliente4.setVisible(false);
+
+            client3.leaveGroup();
+
+        }
+        else if(opcao == textoCliente5.getText())
+        {
+            textoCliente5.setText(null);
+            imgCliente5.setVisible(false);
+
+            client4.leaveGroup();
+        }
+        else if(opcao == textoCliente6.getText())
+        {
+            textoCliente6.setText(null);
+            imgCliente6.setVisible(false);
+
+            client5.leaveGroup();
+        }
+        else if(opcao == textoCliente7.getText())
+        {
+            textoCliente7.setText(null);
+            imgCliente7.setVisible(false);
+
+            client6.leaveGroup();
+        }
+        else if(opcao == textoCliente8.getText())
+        {
+            textoCliente8.setText(null);
+            imgCliente8.setVisible(false);
+
+            client7.leaveGroup();
+        }
+    }
+
+    public void sairDoRecurso() throws NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException {
+        String opcao = selecionaClienteDelete.getValue();
+
+        if(opcao == textoCliente1.getText())
+        {
+            client.recursos.getUsingRecurso(client).sairDoRecurso();
+        }
+        else if(opcao == textoCliente2.getText())
+        {
+            client1.recursos.getUsingRecurso(client).sairDoRecurso();
+        }
+        else if(opcao == textoCliente3.getText())
+        {
+            client2.recursos.getUsingRecurso(client).sairDoRecurso();
+        }
+        else if(opcao == textoCliente4.getText())
+        {
+            client3.recursos.getUsingRecurso(client).sairDoRecurso();
+        }
+        else if(opcao == textoCliente5.getText())
+        {
+            client4.recursos.getUsingRecurso(client).sairDoRecurso();
+        }
+        else if(opcao == textoCliente6.getText())
+        {
+            client5.recursos.getUsingRecurso(client).sairDoRecurso();
+
+        }
+        else if(opcao == textoCliente7.getText())
+        {
+            client6.recursos.getUsingRecurso(client).sairDoRecurso();
+
+        }
+        else if(opcao == textoCliente8.getText())
+        {
+            client7.recursos.getUsingRecurso(client).sairDoRecurso();
         }
     }
 

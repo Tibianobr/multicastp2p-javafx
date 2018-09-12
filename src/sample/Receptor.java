@@ -61,7 +61,7 @@ public class Receptor extends Thread {
                 lista_respostas.add(this.client.name);
                 System.out.println("[TIMEOUT]" + client.name + " deu TIMEOUT em " + CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas));
                 for (String nome : CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas)) {
-                    client.ids_conectados.remove(nome);
+                   // client.ids_conectados.remove(nome);
                 }
                 client.stopWatch.reset();
             }

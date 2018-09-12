@@ -48,19 +48,21 @@ public class Recurso{
         System.out.println("[USAGE] " + current.name + " está utilizando o recurso " + this.id_name);
         this.status = BUSY;
         current.status = "HELD";
-        new java.util.Timer().schedule(
-                new java.util.TimerTask() {
-                    @Override
-                    public void run() {
-                        try {
-                            sairDoRecurso();
-                        } catch (GeneralSecurityException e) {
-                            e.printStackTrace();
+        if (time > 0) {
+            new java.util.Timer().schedule(
+                    new java.util.TimerTask() {
+                        @Override
+                        public void run() {
+                            try {
+                                sairDoRecurso();
+                            } catch (GeneralSecurityException e) {
+                                e.printStackTrace();
+                            }
                         }
-                    }
-                },
-                time
-        );
+                    },
+                    time
+            );
+        }
         return this.id_name;
     }
 

@@ -13,6 +13,7 @@ import java.util.Map;
 
 public class Manager {
     Map<Integer,Recurso> recursos;
+    List<Recurso> lista;
     Integer size;
 
 
@@ -22,6 +23,7 @@ public class Manager {
         for (size = 0; size < lista.size() ; size++)
             recursos.put(size,lista.get(size));
         size = recursos.size();
+        this.lista = lista;
     }
 
     // Retorna o primeiro recurso livre da lista de recursos
@@ -34,6 +36,15 @@ public class Manager {
             {
                 return recursos.get(i);
             }
+        }
+        return null;
+    }
+
+    public Recurso getUsingRecurso(Client request)
+    {
+        for (Recurso recurso:lista) {
+            if(recurso.getCurrent().name.equals(request.name))
+                return recurso;
         }
         return null;
     }

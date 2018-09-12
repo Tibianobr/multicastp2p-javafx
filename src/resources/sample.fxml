@@ -24,7 +24,7 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
-            <JFXButton fx:id="removerCliente" layoutX="119.0" layoutY="468.0" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Deletar Cliente">
+            <JFXButton onAction="#sairDoRecurso" layoutX="119.0" layoutY="468.0" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Deletar Cliente">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>

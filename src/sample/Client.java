@@ -44,7 +44,7 @@ public class Client extends Thread {
     private CyclicBarrier gate;
     // Para não ter acesso direto aos recursos cada cliente possui o conhecimento do gerenciador de recursos do grupo
     // que executa o acesso aos recursos do cliente
-    Manager recursos;
+    public Manager recursos;
     // Situação em que se encontra o cliente
     String status;
     // Protocolo atual do cliente
