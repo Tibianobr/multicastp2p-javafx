@@ -6,7 +6,6 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
-<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -19,12 +18,12 @@
    <children>
       <Pane layoutX="735.0" prefHeight="503.0" prefWidth="252.0">
          <children>
-            <JFXButton fx:id="addCliente" layoutX="119.0" layoutY="432.0" onAction="#adicionarCliente" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Adicionar Cliente">
+            <JFXButton fx:id="addCliente" layoutX="118.0" layoutY="403.0" onAction="#adicionarCliente" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Adicionar Cliente">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
-            <JFXButton onAction="#sairDoRecurso" layoutX="119.0" layoutY="468.0" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Deletar Cliente">
+            <JFXButton layoutX="119.0" layoutY="468.0" onAction="#removerCliente" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Deletar Cliente">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -34,33 +33,20 @@
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
             </ChoiceBox>
-            <TextField fx:id="nomeCliente" layoutX="-1.0" layoutY="432.0" prefHeight="25.0" prefWidth="122.0" promptText="Nome do Cliente" />
+            <TextField fx:id="nomeCliente" layoutX="-2.0" layoutY="403.0" prefHeight="25.0" prefWidth="122.0" promptText="Nome do Cliente" />
             <JFXButton layoutX="-2.0" layoutY="339.0" onAction="#solicitarRecurso" prefHeight="25.0" prefWidth="249.0" style="-fx-background-color: #c2c2c2;" text="Solicitar Recurso">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
             <TextField fx:id="tempoUso" layoutX="183.0" layoutY="308.0" prefHeight="25.0" prefWidth="58.0" />
-            <Text layoutX="7.0" layoutY="325.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tempo de Utilização (segundos)" />
-            <ChoiceBox fx:id="selecionaClienteDelete" layoutX="-3.0" layoutY="468.0" prefHeight="25.0" prefWidth="122.0" />
-            <Text layoutX="41.0" layoutY="30.0" strokeType="OUTSIDE" strokeWidth="0.0" text="STATUS:" wrappingWidth="84.99998971819878">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Text>
-            <Text fx:id="status" layoutX="126.0" layoutY="29.0" strokeType="OUTSIDE" strokeWidth="0.0" text="STATUS">
-               <font>
-                  <Font size="21.0" />
-               </font>
-            </Text>
-            <ScrollPane layoutY="43.0" prefHeight="211.0" prefWidth="243.0" maxWidth="Infinity" maxHeight="Infinity">
-              <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="454.0" prefWidth="228.0"  maxWidth="Infinity" maxHeight="Infinity">
-                     <children>
-                        <TextArea fx:id="log" prefHeight="452.0" prefWidth="228.0" promptText="Log" maxWidth="Infinity" maxHeight="Infinity"/>
-                     </children></AnchorPane>
-              </content>
-            </ScrollPane>
+            <Text layoutX="7.0" layoutY="325.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tempo de Utilização (seg)" />
+            <ChoiceBox fx:id="selecionaClienteDelete" layoutX="-2.0" layoutY="437.0" prefHeight="25.0" prefWidth="243.0" />
+            <JFXButton layoutX="-2.0" layoutY="468.0" onAction="#sairDoRecurso" prefHeight="25.0" prefWidth="122.0" style="-fx-background-color: #c2c2c2;" text="Desalocar Recurso">
+               <cursor>
+                  <Cursor fx:constant="HAND" />
+               </cursor>
+            </JFXButton>
          </children>
       </Pane>
       <Pane layoutX="10.0" layoutY="8.0" prefHeight="482.0" prefWidth="703.0" style="-fx-background-color: #00000040;">
@@ -81,12 +67,8 @@
                   <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="291.0" prefWidth="153.0" />
                </content>
             </ScrollPane>
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="295.0" layoutY="356.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="295.0" layoutY="319.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="295.0" layoutY="279.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="498.0" layoutY="358.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="498.0" layoutY="321.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
-            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="28.0" layoutX="498.0" layoutY="281.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="108.0" layoutX="295.0" layoutY="279.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
+            <Rectangle arcHeight="5.0" arcWidth="5.0" fill="#fff51e" height="108.0" layoutX="498.0" layoutY="281.0" stroke="BLACK" strokeType="INSIDE" width="85.0" />
             <Circle fx:id="imgCliente1" fill="#ff2121" layoutX="92.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="imgCliente2" fill="#ff2121" layoutX="272.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />
             <Circle fx:id="imgCliente4" fill="#b1ff1f" layoutX="599.0" layoutY="61.0" radius="36.0" stroke="BLACK" strokeType="INSIDE" visible="false" />

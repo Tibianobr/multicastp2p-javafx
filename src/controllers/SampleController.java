@@ -275,33 +275,33 @@ public class SampleController{
         }
         else if(opcao == textoCliente2.getText())
         {
-            client1.recursos.getUsingRecurso(client).sairDoRecurso();
+            client1.recursos.getUsingRecurso(client1).sairDoRecurso();
         }
         else if(opcao == textoCliente3.getText())
         {
-            client2.recursos.getUsingRecurso(client).sairDoRecurso();
+            client2.recursos.getUsingRecurso(client2).sairDoRecurso();
         }
         else if(opcao == textoCliente4.getText())
         {
-            client3.recursos.getUsingRecurso(client).sairDoRecurso();
+            client3.recursos.getUsingRecurso(client3).sairDoRecurso();
         }
         else if(opcao == textoCliente5.getText())
         {
-            client4.recursos.getUsingRecurso(client).sairDoRecurso();
+            client4.recursos.getUsingRecurso(client4).sairDoRecurso();
         }
         else if(opcao == textoCliente6.getText())
         {
-            client5.recursos.getUsingRecurso(client).sairDoRecurso();
+            client5.recursos.getUsingRecurso(client5).sairDoRecurso();
 
         }
         else if(opcao == textoCliente7.getText())
         {
-            client6.recursos.getUsingRecurso(client).sairDoRecurso();
+            client6.recursos.getUsingRecurso(client6).sairDoRecurso();
 
         }
         else if(opcao == textoCliente8.getText())
         {
-            client7.recursos.getUsingRecurso(client).sairDoRecurso();
+            client7.recursos.getUsingRecurso(client7).sairDoRecurso();
         }
     }
 
