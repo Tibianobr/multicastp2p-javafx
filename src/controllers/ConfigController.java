@@ -6,6 +6,7 @@ import sample.Main;
 import sample.Simulador;
 
 import java.security.GeneralSecurityException;
+import static sample.Main.TIMEOUT;
 
 
 public class ConfigController {
@@ -16,6 +17,7 @@ public class ConfigController {
     public void changeScreen() throws GeneralSecurityException {
         System.out.println("OK");
         Main.changeScreen("Sample");
-        new Simulador().simular();
+        TIMEOUT = Integer.parseInt(tempoResposta.getText());
+        new Simulador().start();
     }
 }
