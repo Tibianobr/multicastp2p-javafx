@@ -146,7 +146,6 @@ public class Receptor extends Thread {
                 System.out.println("[REQUEST] " + retorno.get("id") + " solicitou um recurso para " + client.name);
                 System.out.println("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
                 SAMPLECONTROLLER.atualizarLog("[REQUEST] " + retorno.get("id") + " solicitou um recurso para " + client.name);
-                TimeUnit.SECONDS.sleep(1);
                 SAMPLECONTROLLER.atualizarLog("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
                 retorno.put("request", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
             } catch (Exception e) {
