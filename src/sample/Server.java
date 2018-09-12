@@ -13,45 +13,26 @@ import java.util.Map;
 import static sample.Main.ADDRESS;
 import static sample.Main.PORT;
 
-public class Server extends Thread {
+
+/*
+    [SERVER] Esta classe é utilizada como indexição dos recursos e do group
+    com o objetivo de não perder as informações caso todos os clientes se desconectarem
+ */
+public class Server {
     MulticastSocket ms;
     InetAddress group;
     String name;
-    byte[] buffer = new byte[10000];
-    Map<String,String> ids_conectados;
     Manager recursos;
 
+    // Esse método tem a função de setar as configurações usadas no serviço
     public void configurar(InetAddress group, String name, Manager recursos) {
         this.group = group;
         this.name = name;
-        this.ids_conectados = new HashMap<>();
         this.recursos = recursos;
         }
 
-    @Override
-    public void run() {
-        int i = 0;
-             while (i < 10) {
-        DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
-        try {
-            ms.receive(messageIn);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
-        JSONObject retorno = new JSONObject((new String(messageIn.getData())));
-        if(retorno.get("type").equals("conexao")) {
-            ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
-        }
-       // System.out.println("Server Received: " + new JSONObject((new String(messageIn.getData()))).get("msg"));
-        try {
-            sleep(1500);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        i++;
-    }
-    }
 
+        // Cria o grupo multicast para repassar aos demais que desejam entrar nele
     public InetAddress criarGrupo()
     {
         try {

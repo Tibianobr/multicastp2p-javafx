@@ -8,7 +8,12 @@ import javafx.stage.Stage;
 
 import java.util.concurrent.TimeUnit;
 
+/*
+    Não iremos comentar parte gráfica nesse trabalho
+ */
+
 public class Main extends Application {
+    // Variáveis que iremos utilizar mais para frente no trabalho e precisamos delas 'fixas'
     public final static int PORT = 6789;
     public final static String ADDRESS = "239.0.0.0";
     public final static Integer WAITING = 1;

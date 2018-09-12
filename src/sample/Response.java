@@ -2,6 +2,12 @@ package sample;
 
 import org.json.JSONObject;
 
+/*
+    [RESPONSE] Segue a mesma logica da classe REQUEST
+    classe auxiliar para padronizar os campos que queriamos
+    e implementação de um método para retornar formatado um json como String
+ */
+
 public class Response {
     private Long protocol;
     private String status;

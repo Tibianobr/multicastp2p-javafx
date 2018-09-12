@@ -10,19 +10,47 @@ import java.util.concurrent.TimeUnit;
 
 import static sample.Main.WAITING;
 
+/*
+    [SIMULADOR] esta classe é responsável por implementar uma simulação de um grupo multicast e suas ações
+    Podendo ser tanto visual com auxilio das telas, quanto automatico com uma situação pré estabelecida
+    Os passos para isso:
+    - Criar um servidor de indexição para criação do grupo multi-cast;
+    - O servidor cria o grupo multicast;
+    - São criados os recursos que serão utilizados na simulação;
+    - Um manager dos recursos disponíveis é atribuido a cada nó, para conhecerem os recursos disponíveis;
+    - Utilizamos o CyclicBarrier para sincronizar as threads dos clientes simulando que eles entraram ao mesmo tempo;
+    - Efetuamos alguns requests com um certo espaçamento para poupar processamento
+ */
 public class Simulador extends Thread {
+    public boolean automatico;
 
     @Override
     public void run() {
         try {
-            simular();
+            if (automatico)
+                simular();
+            else
+                visual();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
     }
 
+    private void visual() {
+        Server servidor = new Server();
+        InetAddress group = servidor.criarGrupo();
+        Recurso processador = new Recurso("Recurso 001", WAITING);
+        Recurso memoria = new Recurso("Recurso 002", WAITING);
+        List<Recurso> recursos = Arrays.asList(processador, memoria);
+        Manager manager = new Manager(recursos);
+        servidor.configurar(group, "Server 01", manager);
+        while (true) {
+                // COMUNICAÇÃO COM A TELA
+        }
+    }
+
+
     public void simular() throws GeneralSecurityException {
-        MulticastSocket s = null;
         try {
             Server servidor = new Server();
             InetAddress group = servidor.criarGrupo();
@@ -44,25 +72,30 @@ public class Simulador extends Thread {
             client3.start();
 
             TimeUnit.SECONDS.sleep(1);
-            client.enviar("-1","request");
+            client.enviar("-1", "request");
             TimeUnit.SECONDS.sleep(1);
-            client1.enviar("-1","request");
+            client1.enviar("-1", "request");
             TimeUnit.SECONDS.sleep(1);
-            client2.enviar("-1","request");
+            client2.enviar("-1", "request");
             TimeUnit.SECONDS.sleep(5);
-            client3.enviar("-1","request");
+            client3.enviar("-1", "request");
             TimeUnit.MILLISECONDS.sleep(100);
-            client.enviar("-1","request");
+            client.enviar("-1", "request");
             TimeUnit.SECONDS.sleep(1);
 
             client2.leaveGroup();
 
+            TimeUnit.SECONDS.sleep(5);
+            Client client4 = new Client(group, "Cliente X", null, manager);
+            client4.start();
+            TimeUnit.SECONDS.sleep(5);
+            client4.enviar("-1", "request");
+            TimeUnit.SECONDS.sleep(5);
+            client4.leaveGroup();
 
 
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-        } finally {
-            if (s != null) s.close();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
         }
     }
 }

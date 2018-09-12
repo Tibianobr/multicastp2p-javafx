@@ -2,6 +2,9 @@ package sample;
 
 import org.json.JSONObject;
 
+/*
+    [REQUEST] Outra classe auxiliar, utilizamos ela para padronizar os requests com os campos que gostariamos
+ */
 public class Request {
     private Long protocol;
     private String criador;
@@ -9,7 +12,8 @@ public class Request {
     private Integer tempo;
 
 
-
+    // A unica pecualiridade que implementamos essa função que devolve uma string formatada como json para já enviarmos
+    // da maneira que gostariamos para o pacote
     public String toString()
     {
         JSONObject json = new JSONObject();
