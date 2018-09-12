@@ -8,8 +8,6 @@ import javafx.scene.paint.Color;
 import javafx.scene.shape.Circle;
 import javafx.scene.control.TextField;
 import javafx.scene.control.ChoiceBox;
-import java.util.ArrayList;
-import javafx.collections.ObservableList;
 import javafx.collections.FXCollections;
 import javafx.stage.Stage;
 

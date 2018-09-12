@@ -1,25 +1,26 @@
 package sample;
 
-import org.apache.commons.lang3.time.StopWatch;
-import org.json.JSONObject;
-
-import javax.crypto.BadPaddingException;
-import javax.crypto.IllegalBlockSizeException;
-import javax.crypto.NoSuchPaddingException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
+import static sample.Main.TIMEOUT;
 import static sample.Main.WAITING;
 
-public class Simulador {
+public class Simulador extends Thread {
+
+    @Override
+    public void run() {
+        try {
+            simular();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
+    }
 
     public void simular() throws GeneralSecurityException {
         MulticastSocket s = null;
@@ -30,65 +31,33 @@ public class Simulador {
             Recurso memoria = new Recurso("Recurso 002", WAITING);
             List<Recurso> recursos = Arrays.asList(processador, memoria);
             Manager manager = new Manager(recursos);
-
             servidor.configurar(group, "Server 01", manager);
 
-            final CyclicBarrier initial_gate = new CyclicBarrier(3);
+            final CyclicBarrier initial_gate = new CyclicBarrier(4);
             Client client = new Client(group, "Cliente A", initial_gate, manager);
             Client client1 = new Client(group, "Cliente B", initial_gate, manager);
             Client client2 = new Client(group, "Cliente C", initial_gate, manager);
+            Client client3 = new Client(group, "Cliente D", initial_gate, manager);
 
-            //   servidor.start();
-            TimeUnit.MILLISECONDS.sleep(500);
             client1.start();
-            TimeUnit.MILLISECONDS.sleep(1200);
             client.start();
-            TimeUnit.MILLISECONDS.sleep(1200);
             client2.start();
+            client3.start();
 
             TimeUnit.SECONDS.sleep(1);
-//            try {
-//                System.out.println(client.ids_conectados.get("Cliente A"));
-//                String cod = Criptografia.encriptar(client.keyring.getPrivateKey(), "CRIPTOGRAFIA BOYZ");
-//                System.out.println(cod);
-//                System.out.println(Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get("Cliente A")), cod));
-//            } catch (NoSuchAlgorithmException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeyException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchPaddingException e) {
-//                e.printStackTrace();
-//            } catch (BadPaddingException e) {
-//                e.printStackTrace();
-//            } catch (IllegalBlockSizeException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeySpecException e) {
-//                e.printStackTrace();
-//            }
-
-//            StopWatch stopWatch = new StopWatch();
-//            stopWatch.start();
-//            TimeUnit.SECONDS.sleep(2);
-//            //stopWatch.suspend();
-//            System.out.println(stopWatch.getTime());
-            TimeUnit.MILLISECONDS.sleep(1200);
             client.enviar("-1","request");
-//            TimeUnit.MILLISECONDS.sleep(1000);
-//            client1.enviar("-1","request");
-//            TimeUnit.MILLISECONDS.sleep(1000);
-//            client2.enviar("-1","request");
-//            TimeUnit.MILLISECONDS.sleep(10000);
-//            client.enviar("-1","request");
-//            TimeUnit.MILLISECONDS.sleep(10000);
-//            client1.enviar("-1","request");
+            TimeUnit.SECONDS.sleep(1);
+            client1.enviar("-1","request");
+            TimeUnit.SECONDS.sleep(1);
+            client2.enviar("-1","request");
+            TimeUnit.SECONDS.sleep(5);
+            client3.enviar("-1","request");
+            TimeUnit.MILLISECONDS.sleep(100);
+            client.enviar("-1","request");
+            TimeUnit.SECONDS.sleep(1);
 
-            //client2.leaveGroup();
 
-            //  s.leaveGroup(group);
-//        } catch (SocketException e) {
-//            System.out.println("Socket: " + e.getMessage());
-//        } catch (IOException e) {
-//            System.out.println("IO: " + e.getMessage());
+
             } catch (InterruptedException e) {
                 e.printStackTrace();
         } finally {
@@ -96,35 +65,3 @@ public class Simulador {
         }
     }
 }
-
-
-//
-//                        GenerateKeys gk = null;
-//            try {
-//                gk = new GenerateKeys(1024);
-//                gk.createKeys();
-//                 System.out.println(gk.getPrivateKey().getEncoded());
-//                  System.out.println(gk.getPublicKey().getEncoded());
-//            } catch (NoSuchAlgorithmException e) {
-//                System.err.println(e.getMessage());
-//            }
-//            JSONObject json = new JSONObject();
-//            json.put("key",gk.getPublicKey().getEncoded());
-//            try {
-//                String cod = RSACryptography.encrypt(gk.getPrivateKey(), "CRIPTOGRAFIA BOYZ");
-//                System.out.println(cod);
-//                PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec((byte[]) json.get("key")));
-//                System.out.println(RSACryptography.decrypt(publicKey, cod));
-//            } catch (NoSuchAlgorithmException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeyException e) {
-//                e.printStackTrace();
-//            } catch (NoSuchPaddingException e) {
-//                e.printStackTrace();
-//            } catch (BadPaddingException e) {
-//                e.printStackTrace();
-//            } catch (InvalidKeySpecException e) {
-//                e.printStackTrace();
-//            } catch (IllegalBlockSizeException e) {
-//                e.printStackTrace();
-//            }

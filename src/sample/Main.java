@@ -14,7 +14,7 @@ public class Main extends Application {
     public final static String ADDRESS = "239.0.0.0";
     public final static Integer WAITING = 1;
     public final static Integer BUSY = 2;
-    public final static Integer TIMEOUT = 100;
+    public static Integer TIMEOUT;
 
     private static Stage stage;
 
