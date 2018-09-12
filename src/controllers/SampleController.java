@@ -271,37 +271,45 @@ public class SampleController{
 
         if(opcao == textoCliente1.getText())
         {
+            imgCliente1.setFill(Color.GREEN);
             client.recursos.getUsingRecurso(client).sairDoRecurso();
         }
         else if(opcao == textoCliente2.getText())
         {
-            client1.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente2.setFill(Color.GREEN);
+            client1.recursos.getUsingRecurso(client1).sairDoRecurso();
         }
         else if(opcao == textoCliente3.getText())
         {
-            client2.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente3.setFill(Color.GREEN);
+            client2.recursos.getUsingRecurso(client2).sairDoRecurso();
         }
         else if(opcao == textoCliente4.getText())
         {
-            client3.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente4.setFill(Color.GREEN);
+            client3.recursos.getUsingRecurso(client3).sairDoRecurso();
         }
         else if(opcao == textoCliente5.getText())
         {
-            client4.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente5.setFill(Color.GREEN);
+            client4.recursos.getUsingRecurso(client4).sairDoRecurso();
         }
         else if(opcao == textoCliente6.getText())
         {
-            client5.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente6.setFill(Color.GREEN);
+            client5.recursos.getUsingRecurso(client5).sairDoRecurso();
 
         }
         else if(opcao == textoCliente7.getText())
         {
-            client6.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente7.setFill(Color.GREEN);
+            client6.recursos.getUsingRecurso(client6).sairDoRecurso();
 
         }
         else if(opcao == textoCliente8.getText())
         {
-            client7.recursos.getUsingRecurso(client).sairDoRecurso();
+            imgCliente8.setFill(Color.GREEN);
+            client7.recursos.getUsingRecurso(client7).sairDoRecurso();
         }
     }
 

@@ -43,9 +43,11 @@ public class Manager {
     public Recurso getUsingRecurso(Client request)
     {
         for (Recurso recurso:lista) {
-            if(recurso.getCurrent().name.equals(request.name))
+            if(recurso.getCurrent().name.equals(request.name)) {
+                System.out.println(recurso.getCurrent().name);
                 return recurso;
-        }
+            }
+            }
         return null;
     }
 
