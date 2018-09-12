@@ -7,9 +7,7 @@ import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.UnknownHostException;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import static sample.Main.ADDRESS;
@@ -60,10 +58,7 @@ public class Server extends Thread {
             this.group = InetAddress.getByName(ADDRESS);
             ms = new MulticastSocket(PORT);
             ms.joinGroup(group);
-        } catch (UnknownHostException e) {
-            e.printStackTrace();
-        }
-        catch (IOException e) {
+        } catch (IOException e) {
             e.printStackTrace();
         }
         return this.group;

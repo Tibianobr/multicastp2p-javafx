@@ -9,7 +9,6 @@ import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
-import java.util.concurrent.TimeUnit;
 
 import org.apache.commons.lang3.time.StopWatch;
 import org.json.*;
@@ -22,13 +21,13 @@ import static java.lang.System.currentTimeMillis;
 import static sample.Main.PORT;
 
 public class Client extends Thread {
-    MulticastSocket ms;
-    InetAddress group;
+    private MulticastSocket ms;
+    private InetAddress group;
     String name;
-    Receptor receptor;
+    private Receptor receptor;
     Map<String, byte[]> ids_conectados;
-    GenerateKeys keyring;
-    CyclicBarrier gate;
+    private GenerateKeys keyring;
+    private CyclicBarrier gate;
     Manager recursos;
     String status;
     Long protocol;
@@ -53,8 +52,6 @@ public class Client extends Thread {
         try {
             keyring = new GenerateKeys(1024);
             keyring.createKeys();
-            // System.out.println(gk.getPrivateKey().getEncoded());
-            //System.out.println("CRIADA = " + Arrays.toString(keyring.getPrivateKey().getEncoded()));
         } catch (NoSuchAlgorithmException e) {
             System.err.println(e.getMessage());
         }
@@ -62,7 +59,7 @@ public class Client extends Thread {
         this.receptor.start();
     }
 
-    private void joinGroup() throws IOException {
+    private void joinGroup() throws IOException, IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
         ms.joinGroup(group);
         enviar(this.name + " entrou no grupo!", "conexao");
     }
@@ -73,21 +70,19 @@ public class Client extends Thread {
     public void run() {
         try {
             gate.await();
-        } catch (InterruptedException ex) {
-            ex.printStackTrace();
-        } catch (BrokenBarrierException ex) {
+        } catch (InterruptedException | BrokenBarrierException ex) {
             ex.printStackTrace();
         }
         JSONObject my_obj = new JSONObject();
         my_obj.put("name", name);
         try {
             joinGroup();
-        } catch (IOException e) {
+        } catch (IOException | BadPaddingException | InvalidKeyException | NoSuchAlgorithmException | NoSuchPaddingException | IllegalBlockSizeException e) {
             e.printStackTrace();
         }
     }
 
-    public void enviar(String msg, String tipo) {
+    public void enviar(String msg, String tipo) throws NoSuchAlgorithmException, BadPaddingException, NoSuchPaddingException, IllegalBlockSizeException, InvalidKeyException {
         // TODO CRIPTOGRAFIA NA MENSAGEM COMO ASSINATURA DIGITAL
         Request r = null;
         JSONObject json = new JSONObject();
@@ -97,7 +92,7 @@ public class Client extends Thread {
         json.put("time", currentTimeMillis());
         if (tipo.equals("conexao"))
             json.put("key", this.keyring.getPublicKey().getEncoded());
-        else if (tipo.equals("request")) {
+        else if (tipo.equals("request") && !this.status.equals("HELD")) {
             if (Long.parseLong(msg) != -1) {
                 r = new Request(this.name, Long.parseLong(msg), 200);
             }
@@ -105,19 +100,7 @@ public class Client extends Thread {
                 this.protocol_time = System.currentTimeMillis();
                 r = new Request(this.name, protocol_time, 200);
             }
-            try {
-                json.put("request", Criptografia.encriptar(keyring.getPrivateKey(),r.toString()));
-            } catch (InvalidKeyException e) {
-                e.printStackTrace();
-            } catch (NoSuchPaddingException e) {
-                e.printStackTrace();
-            } catch (NoSuchAlgorithmException e) {
-                e.printStackTrace();
-            } catch (BadPaddingException e) {
-                e.printStackTrace();
-            } catch (IllegalBlockSizeException e) {
-                e.printStackTrace();
-            }
+            json.put("request", Criptografia.encriptar(keyring.getPrivateKey(),r.toString()));
             this.protocol = r.getProtocol();
             if (!this.stopWatch.isStarted())
                 this.stopWatch.start();
@@ -125,9 +108,12 @@ public class Client extends Thread {
                 this.stopWatch.reset();
                 this.stopWatch.start();
             }
+            this.status = "WANTED";
             } else if (tipo.equals("response")) {
-            json.put("response", new Response(Long.parseLong(msg), this.status,this.protocol_time).toString());
+            json.put("response", Criptografia.encriptar(keyring.getPrivateKey(),new Response(Long.parseLong(msg), this.status,this.protocol_time).toString()));
         }
+        else if(tipo.equals("request") && status.equals("HELD"))
+            json.put("type","discard");
         DatagramPacket messageOut = new DatagramPacket(json.toString().getBytes(), json.toString().getBytes().length, group, PORT);
         try {
             ms.send(messageOut);
@@ -136,8 +122,7 @@ public class Client extends Thread {
         }
     }
 
-    public void leaveGroup()
-    {
+    public void leaveGroup() throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
         this.enviar("", "desconexao");
         try {
             this.ms.leaveGroup(this.group);

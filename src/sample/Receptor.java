@@ -10,25 +10,25 @@ import javax.crypto.NoSuchPaddingException;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
-import java.nio.charset.StandardCharsets;
 import java.security.*;
-import java.security.spec.InvalidKeySpecException;
-import java.security.spec.PKCS8EncodedKeySpec;
-import java.security.spec.X509EncodedKeySpec;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static sample.Main.TIMEOUT;
 
 public class Receptor extends Thread {
-    byte[] buffer = new byte[10000];
+    private byte[] buffer = new byte[10000];
     MulticastSocket ms;
-    String name;
-    Client client;
+    private String name;
+    private Client client;
+    private int count_RELEASED = 0;
+    private int count_HELD = 0;
+    private int num_clientes_checados = 0;
+    private Recurso current = null;
+    private List<String> lista_respostas = new ArrayList<>();
 
-    public Receptor(MulticastSocket ms, String name, Client client)
-    {
+
+    public Receptor(MulticastSocket ms, String name, Client client) {
         this.ms = ms;
         this.name = name;
         this.client = client;
@@ -36,21 +36,20 @@ public class Receptor extends Thread {
 
     @Override
     public void run() {
-        escutar();
+        try {
+            escutar();
+        } catch (GeneralSecurityException e) {
+            e.printStackTrace();
+        }
     }
 
-    private void escutar() {
-        int count_RELEASED = 0;
-        int count_HELD = 0;
-        int num_clientes_checados = 0;
-        List<String> lista_respostas = new ArrayList<>();
-        Recurso current = null;
+    private void escutar() throws GeneralSecurityException {
+
         while (true) {
-            if(this.client.stopWatch.getTime() > TIMEOUT)
-            {
+            if (this.client.stopWatch.getTime() > TIMEOUT) {
                 lista_respostas.add(this.client.name);
                 System.out.println(client.name + " deu TIMEOUT em " + CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas));
-                for (String nome: CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas)) {
+                for (String nome : CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas)) {
                     client.ids_conectados.remove(nome);
                 }
                 client.stopWatch.reset();
@@ -63,149 +62,113 @@ public class Receptor extends Thread {
                 e.printStackTrace();
             }
             JSONObject retorno = new JSONObject((new String(messageIn.getData())));
-            System.out.println(retorno);
-            if(retorno.get("type").equals("conexao")) {
-                JSONArray jsonArray = retorno.getJSONArray("key");
-                byte[] bytes_key = new byte[jsonArray.length()];
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    bytes_key[i]=(byte)(((int)jsonArray.get(i)) & 0xFF);
-                }
-                if (!client.ids_conectados.containsKey(retorno.get("id").toString()))
-                {
-                    client.ids_conectados.put(retorno.get("id").toString(),bytes_key);
-                    client.enviar("","conexao");
-                }
+            switch (retorno.get("type").toString()) {
+                case "conexao":
+                    this.conexao(retorno);
+                    break;
+                case "desconexao":
+                    this.desconexao(retorno);
+                    break;
+                case "freedom":
+                    this.freedom(retorno);
+                    break;
+                case "request":
+                    this.request(retorno);
+                    break;
+                case "response":
+                    this.response(retorno);
+                    break;
+                case "discard":
+                    System.out.println(retorno);
+                    break;
+            }
+        }
+    }
 
-            }
-            else if (retorno.get("type").equals("desconexao"))
-            {
-                this.client.ids_conectados.remove(retorno.get("id"));
-            }
-            else if (retorno.get("type").equals("freedom"))
-            {
-                num_clientes_checados =0;
-                if(this.client.status.equals("WANTED"))
-                {
-                    this.client.enviar(client.protocol_time.toString() ,"request");
-                }
-            }
-            else if (retorno.get("type").equals("request") && !retorno.get("id").equals(client.name))
-            {
-                try {
-                    retorno.put("request",Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
-                } catch (GeneralSecurityException e) {
-                    e.printStackTrace();
-                }
-             //   System.out.println(retorno.get("id").toString() + " com o request = " + retorno.get("request").toString());
-             //   System.out.println(new JSONObject(retorno.get("request").toString()).getLong("protocol_time"));
-              //  if (new JSONObject(retorno.get("request").toString()).getLong("protocol_time") > this.client.protocol_time)
-//                {
-//                    String old_status = this.client.status;
-//                    this.client.status = "HELD";
-//                    this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(),"response");
-//                    client.status = old_status;
-//                }
-                System.out.println(retorno);
-                this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(),"response");
-            }
-            if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name)){
-                if(new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)) {
-                    num_clientes_checados++;
-                    lista_respostas.add(retorno.get("id").toString());
-                    //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
-                    if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED")) {
-                        count_RELEASED++;
-                        if (count_RELEASED == client.ids_conectados.size() - 1) {
-                            if (this.client.stopWatch.isStarted())
-                                this.client.stopWatch.suspend();
-                            count_RELEASED = 0;
-                            System.out.println(client.name + " PODEMOS ALOCAR O RECURSO");
-                            current = client.recursos.getfirstFree();
-                            if (current != null)
-                                current.utilizarRecurso(client, 10000);
-                            lista_respostas.clear();
-                        }
-                    } else if (new JSONObject(retorno.get("response").toString()).get("status").equals("HELD")) {
-                        count_HELD++;
+    private void conexao(JSONObject retorno) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+        JSONArray jsonArray = retorno.getJSONArray("key");
+        byte[] bytes_key = new byte[jsonArray.length()];
+        for (int i = 0; i < jsonArray.length(); i++) {
+            bytes_key[i] = (byte) (((int) jsonArray.get(i)) & 0xFF);
+        }
+        if (!client.ids_conectados.containsKey(retorno.get("id").toString())) {
+            client.ids_conectados.put(retorno.get("id").toString(), bytes_key);
+            client.enviar("confirmation", "conexao");
+        }
+    }
 
-                        if (count_HELD == client.recursos.size) {
-                            //TODO DROP PROTOCOL e RESET DOS CONTADORES
-                            count_HELD = 0;
-                            count_RELEASED = 0;
-                            current = new Recurso("a", 1);
-                            if (this.client.status != "HELD")
-                                this.client.status = "WANTED";
-                            lista_respostas.clear();
-                            this.client.stopWatch.suspend();
-                            this.client.protocol_time = System.currentTimeMillis();
-                        }
-                    } else if (new JSONObject(retorno.get("response").toString()).get("status").equals("WANTED")) {
-                        if (client.protocol_time < new JSONObject(retorno.get("response").toString()).getLong("protocol_time")) {
-                            count_RELEASED++;
-                            if (count_RELEASED == client.ids_conectados.size() - 1) {
-                                this.client.stopWatch.suspend();
-                                count_RELEASED = 0;
-                                System.out.println(client.name + " PODEMOS ALOCAR O RECURSO");
-                                current = client.recursos.getfirstFree();
-                                if (current != null)
-                                    current.utilizarRecurso(client, 10000);
-                                lista_respostas.clear();
+    private void desconexao(JSONObject retorno) {
+        this.client.ids_conectados.remove(retorno.get("id"));
+    }
 
-                            }
-                        } else {
-                            count_HELD++;
-                            if (count_HELD == client.recursos.size) {
-                                this.client.stopWatch.suspend();
-                                //TODO DROP PROTOCOL e RESET DOS CONTADORES
-                                count_HELD = 0;
-                                count_RELEASED = 0;
-                                current = new Recurso("a", 1);
-                                if (this.client.status != "HELD")
-                                    this.client.status = "WANTED";
-                                lista_respostas.clear();
-                                this.client.protocol_time = System.currentTimeMillis();
-                            }
-                        }
-                    }
-                }
-                    if (num_clientes_checados == client.ids_conectados.size() - 1 && current == null)
-                    {
+    private void freedom(JSONObject retorno) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+        if (this.client.status.equals("WANTED")) {
+            this.client.enviar(client.protocol_time.toString(), "request");
+            num_clientes_checados = 0;
+        }
+    }
+
+    private void request(JSONObject retorno) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+        if (!retorno.get("id").equals(client.name)) {
+            try {
+                retorno.put("request", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
+                System.out.println("[REQUEST] " + retorno.get("id") + " solicitou um recurso para " + client.name);
+            } catch (Exception e) {
+                System.out.println("ERRO DE ASSINATURA DIGITAL");
+            }
+            this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(), "response");
+        }
+    }
+
+    private void response(JSONObject retorno) throws GeneralSecurityException {
+        if (!retorno.get("id").equals(client.name) && !client.status.equals("HELD")) {
+            retorno.put("response", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("response")));
+            if (new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)) {
+                num_clientes_checados++;
+                lista_respostas.add(retorno.get("id").toString());
+                 if (new JSONObject(retorno.get("response").toString()).get("status").equals("WANTED"))
+                    System.out.println("[STATUS] " + retorno.get("id") + " se encontra no status WANTED");
+                else if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED")) {
+                    count_RELEASED++;
+                    System.out.println("[RESPOSTA] " + retorno.get("id") + " respondeu o protocolo para " + client.name + " com " + new JSONObject(retorno.get("response").toString()).get("status"));
+                    if (count_RELEASED == client.ids_conectados.size() - 1) {
                         if (this.client.stopWatch.isStarted())
                             this.client.stopWatch.suspend();
-                        System.out.println(client.name + "   ALOCA");
-                        num_clientes_checados = 0;
+                        count_RELEASED = 0;
                         current = client.recursos.getfirstFree();
                         if (current != null)
-                            current.utilizarRecurso(client, 10000);
+                            current.utilizarRecurso(client, 3000);
                         lista_respostas.clear();
+                        client.protocol = -1L;
+
+                    }
+                } else if (new JSONObject(retorno.get("response").toString()).get("status").equals("HELD")) {
+                    count_HELD++;
+                    System.out.println("[RESPOSTA] " + retorno.get("id") + " respondeu o protocolo para " + client.name + " com " + new JSONObject(retorno.get("response").toString()).get("status"));
+                    if (count_HELD == client.recursos.size) {
                         count_HELD = 0;
                         count_RELEASED = 0;
+                        if (!this.client.status.equals("HELD"))
+                            this.client.status = "WANTED";
+                        lista_respostas.clear();
+                        this.client.stopWatch.suspend();
+                        this.client.protocol_time = System.currentTimeMillis();
                     }
+                }
+                if (num_clientes_checados == client.ids_conectados.size() - 1 && !this.client.status.equals("HELD") && client.protocol != -1) {
+                    if (this.client.stopWatch.isStarted()) {
+                        this.client.stopWatch.reset();
+                    }
+                        num_clientes_checados = 0;
+                    current = client.recursos.getfirstFree();
+                    if (current != null)
+                        current.utilizarRecurso(client, 10000);
+                    lista_respostas.clear();
+                    client.protocol = -1L;
+                    count_HELD = 0;
+                    count_RELEASED = 0;
+                }
             }
-//            if (client.ids_conectados.size() == 3 && retorno.get("type").equals("conexao"))
-//                System.out.println(client.name + " conhece " + client.ids_conectados.keySet());
-//            if (!retorno.get("type").equals("desconexao"))
-//            System.out.println(client.name + " LISTA = " +client.ids_conectados.keySet());
-
-
         }
     }
 }
-
-//try {
-//        PublicKey publicKey = KeyFactory.getInstance("RSA").generatePublic(new X509EncodedKeySpec(bytes_key));
-//        String cod = RSACryptography.encrypt(publicKey, "KRL AGORA VAI");
-//        System.out.println(RSACryptography.decrypt(client.gk.getPrivateKey(), cod));
-//        } catch (InvalidKeySpecException e) {
-//        e.printStackTrace();
-//        } catch (NoSuchAlgorithmException e) {
-//        e.printStackTrace();
-//        } catch (BadPaddingException e) {
-//        e.printStackTrace();
-//        } catch (IllegalBlockSizeException e) {
-//        e.printStackTrace();
-//        } catch (NoSuchPaddingException e) {
-//        e.printStackTrace();
-//        } catch (InvalidKeyException e) {
-//        e.printStackTrace();
-//        }
