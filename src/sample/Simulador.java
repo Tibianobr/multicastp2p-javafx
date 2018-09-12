@@ -10,7 +10,6 @@ import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
-import static sample.Main.TIMEOUT;
 import static sample.Main.WAITING;
 
 public class Simulador extends Thread {
@@ -57,6 +56,8 @@ public class Simulador extends Thread {
             TimeUnit.MILLISECONDS.sleep(100);
             client.enviar("-1","request");
             TimeUnit.SECONDS.sleep(1);
+
+            client2.leaveGroup();
 
 
 

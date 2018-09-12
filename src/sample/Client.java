@@ -101,6 +101,7 @@ public class Client extends Thread {
                 r = new Request(this.name, protocol_time, 200);
             }
             json.put("request", Criptografia.encriptar(keyring.getPrivateKey(),r.toString()));
+            System.out.println("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada o [REQUEST]");
             this.protocol = r.getProtocol();
             if (!this.stopWatch.isStarted())
                 this.stopWatch.start();
@@ -111,6 +112,7 @@ public class Client extends Thread {
             this.status = "WANTED";
             } else if (tipo.equals("response")) {
             json.put("response", Criptografia.encriptar(keyring.getPrivateKey(),new Response(Long.parseLong(msg), this.status,this.protocol_time).toString()));
+            System.out.println("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada a [RESPONSE]");
         }
         else if(tipo.equals("request") && status.equals("HELD"))
             json.put("type","discard");

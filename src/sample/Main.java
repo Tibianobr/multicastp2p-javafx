@@ -1,6 +1,5 @@
 package sample;
 
-import controllers.SampleController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -22,7 +21,7 @@ public class Main extends Application {
     private static Scene Sample;
 
     @Override
-    public void start(Stage primaryStage) throws Exception{
+    public void start(Stage primaryStage) throws Exception {
 
         stage = primaryStage;
 
@@ -37,11 +36,10 @@ public class Main extends Application {
         primaryStage.setTitle("Sistemas Recursos Compartilhados");
         primaryStage.setScene(Config);
         primaryStage.show();
-        TimeUnit.SECONDS.sleep(2);
     }
 
-    public static void changeScreen(String scr){
-        switch(scr){
+    public static void changeScreen(String scr) {
+        switch (scr) {
             case "Config":
                 stage.setScene(Config);
                 break;
