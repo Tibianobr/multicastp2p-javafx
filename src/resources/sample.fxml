@@ -53,11 +53,11 @@
                   <Font size="21.0" />
                </font>
             </Text>
-            <ScrollPane layoutY="43.0" prefHeight="211.0" prefWidth="243.0">
+            <ScrollPane layoutY="43.0" prefHeight="211.0" prefWidth="243.0" maxWidth="Infinity" maxHeight="Infinity">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="454.0" prefWidth="228.0">
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="454.0" prefWidth="228.0"  maxWidth="Infinity" maxHeight="Infinity">
                      <children>
-                        <TextArea fx:id="log" prefHeight="452.0" prefWidth="228.0" promptText="Log" />
+                        <TextArea fx:id="log" prefHeight="452.0" prefWidth="228.0" promptText="Log" maxWidth="Infinity" maxHeight="Infinity"/>
                      </children></AnchorPane>
               </content>
             </ScrollPane>

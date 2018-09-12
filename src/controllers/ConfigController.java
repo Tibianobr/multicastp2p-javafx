@@ -24,4 +24,5 @@ public class ConfigController {
             new Simulador(false).start();
         }
     }
+
 }

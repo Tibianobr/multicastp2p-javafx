@@ -3,6 +3,8 @@
     <CLASSES>
       <root url="jar://$PROJECT_DIR$/libs/org-json.jar!/" />
       <root url="jar://$PROJECT_DIR$/libs/jfoenix-8.0.7.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-collections4-4.2.jar!/" />
+      <root url="jar://$PROJECT_DIR$/libs/commons-lang3-3.8.jar!/" />
     </CLASSES>
     <JAVADOC />
     <SOURCES />

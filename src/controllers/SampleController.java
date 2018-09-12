@@ -24,12 +24,14 @@ import java.util.List;
 import java.util.concurrent.CyclicBarrier;
 import java.util.concurrent.TimeUnit;
 
+import static sample.Main.SAMPLECONTROLLER;
 import static sample.Main.WAITING;
 
 
 public class SampleController{
     InetAddress group;
     Manager manager;
+    Integer log_linhas = 0;
     Client client,client1,client2,client3,client4,client5,client6,client7;
 
     @FXML
@@ -52,6 +54,7 @@ public class SampleController{
     private int count=3;
 
     public void inicia(){
+        SAMPLECONTROLLER = this;
         Server servidor = new Server();
         group = servidor.criarGrupo();
         Recurso processador = new Recurso("Recurso 001", WAITING);
@@ -146,50 +149,66 @@ public class SampleController{
 
         if(selecionado == textoCliente1.getText()) {
             imgCliente1.setFill(Color.ORANGE);
-            log.setText(textoCliente1.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+         //   log.setText(textoCliente1.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client.request_time = Integer.parseInt(tempoUso.getText())* 1000;
             client.enviar("-1", "request");
         }
 
         else if(selecionado == textoCliente2.getText()){
             imgCliente2.setFill(Color.ORANGE);
-            log.setText(textoCliente2.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+          //  log.setText(textoCliente2.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client1.request_time = Integer.parseInt(tempoUso.getText())* 1000;
             client1.enviar("-1", "request");
         }
 
         else if(selecionado == textoCliente3.getText()){
             imgCliente3.setFill(Color.ORANGE);
-            log.setText(textoCliente3.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+          //  log.setText(textoCliente3.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client2.request_time = Integer.parseInt(tempoUso.getText())* 1000;
             client2.enviar("-1", "request");
         }
 
         else if(selecionado == textoCliente4.getText()) {
             imgCliente4.setFill(Color.ORANGE);
             TimeUnit.SECONDS.sleep(1);
-
-            log.setText(textoCliente4.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client3.request_time = Integer.parseInt(tempoUso.getText())* 1000;
+           // log.setText(textoCliente4.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client3.enviar("-1", "request");
         }
         else if(selecionado == textoCliente5.getText()) {
             imgCliente5.setFill(Color.ORANGE);
-            log.setText(textoCliente5.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client4.request_time = Integer.parseInt(tempoUso.getText())* 1000;
+            //  log.setText(textoCliente5.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client4.enviar("-1", "request");
         }
         else if(selecionado == textoCliente6.getText()){
             imgCliente6.setFill(Color.ORANGE);
-            log.setText(textoCliente6.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client5.request_time = Integer.parseInt(tempoUso.getText())* 1000;
+            //   log.setText(textoCliente6.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client5.enviar("-1", "request");
         }
 
         else if(selecionado == textoCliente7.getText()){
             imgCliente7.setFill(Color.ORANGE);
-            log.setText(textoCliente7.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client6.request_time = Integer.parseInt(tempoUso.getText()) * 1000;
+            //    log.setText(textoCliente7.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client6.enviar("-1", "request");
         }
 
         else if(selecionado == textoCliente8.getText()){
             imgCliente8.setFill(Color.ORANGE);
-            log.setText(textoCliente8.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+            client7.request_time = Integer.parseInt(tempoUso.getText()) * 1000;
+            // log.setText(textoCliente8.getText() + " Solicitou um recurso"+ "\n" + log.getText());
             client7.enviar("-1", "request");
         }
+    }
+
+    public void atualizarLog(String msg)
+    {
+
+    //    log_linhas++;
+     //   log.setText(msg);
+       // if (log != null && msg != null)
+         //   log.appendText("\n" + msg);
     }
 }

@@ -10,6 +10,7 @@ import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
 import java.util.concurrent.CyclicBarrier;
 
+import controllers.SampleController;
 import org.apache.commons.lang3.time.StopWatch;
 import org.json.*;
 
@@ -19,6 +20,7 @@ import javax.crypto.NoSuchPaddingException;
 
 import static java.lang.System.currentTimeMillis;
 import static sample.Main.PORT;
+import static sample.Main.SAMPLECONTROLLER;
 
 /*
     [CLIENT] Peça principal do sistema, vai ser detalhado no decorrer do código abaixo.
@@ -51,6 +53,7 @@ public class Client extends Thread {
     Long protocol_time;
     // Cronometro pessoal do cliente para controlar timeouts
     StopWatch stopWatch;
+    public Integer request_time = 1000;
 
 
     // Ao iniciar o cliente são passadas algumas informações do grupo
@@ -120,8 +123,15 @@ public class Client extends Thread {
         json.put("time", currentTimeMillis());
         // A partir disso trabalhamos os tipos especificos do pacote
         // Caso seja do tipo conexao, iremos enviar também a chave pública para os demais armazenarem ela
-        if (tipo.equals("conexao"))
+        if (tipo.equals("conexao")) {
             json.put("key", this.keyring.getPublicKey().getEncoded());
+            if (!msg.equals("confirmation"))
+            {
+                System.out.println("[CONEXAO] " + this.name + " se juntou ao grupo e apresentou sua chave");
+                SAMPLECONTROLLER.atualizarLog("[CONEXAO] " + this.name + " se juntou ao grupo e apresentou sua chave");
+            }
+
+        }
         // Caso seja do tipo request(solicitação de recurso) o processo tem que garantir que não esteja já utilizando
         // passamos também o tempo que o protocolo foi criado para priorizar quem pediu antes caso exista mais de um
         // processo com o estado de WANTED
@@ -137,6 +147,7 @@ public class Client extends Thread {
             // para assim garantir a assinatura digital
             json.put("request", Criptografia.encriptar(keyring.getPrivateKey(),r.toString()));
             System.out.println("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada o [REQUEST]");
+            SAMPLECONTROLLER.atualizarLog("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada o [REQUEST]");
             this.protocol = r.getProtocol();
             // Inicializamos o timer de timeout e caso já tivessemos enviado reiniciamos a contagem
             if (!this.stopWatch.isStarted())
@@ -152,6 +163,8 @@ public class Client extends Thread {
             else if (tipo.equals("response")) {
             json.put("response", Criptografia.encriptar(keyring.getPrivateKey(),new Response(Long.parseLong(msg), this.status,this.protocol_time).toString()));
             System.out.println("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada a [RESPONSE]");
+            SAMPLECONTROLLER.atualizarLog("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada a [RESPONSE]");
+
         }
         // Caso o client esteja fazendo um request que não faz sentido
         // Como por exemplo pedir o recurso enquanto está utilizando ou desconectar enquanto está com o recurso

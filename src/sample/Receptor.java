@@ -13,7 +13,9 @@ import java.net.MulticastSocket;
 import java.security.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
+import static sample.Main.SAMPLECONTROLLER;
 import static sample.Main.TIMEOUT;
 
 /*
@@ -94,6 +96,7 @@ public class Receptor extends Thread {
                     break;
                 case "discard":
                     System.out.println("[DISCARD] o grupo descartou a mensagem de " + retorno.get("id") + " pois fez um request ou desconexao enquanto utiliza o recurso!! ");
+                    SAMPLECONTROLLER.atualizarLog("[DISCARD] o grupo descartou a mensagem de " + retorno.get("id") + " pois fez um request ou desconexao enquanto utiliza o recurso!! ");
                     break;
             }
         }
@@ -119,6 +122,7 @@ public class Receptor extends Thread {
     // Um caso simples é o de desconexao que ao receber somente retira o cliente da lista de conectados
     private void desconexao(JSONObject retorno) {
         System.out.println("[DISCONNECT]" + this.client.name + " recebeu o aviso de desconexao de " + retorno.get("id"));
+        SAMPLECONTROLLER.atualizarLog("[DISCONNECT]" + this.client.name + " recebeu o aviso de desconexao de " + retorno.get("id"));
         this.client.ids_conectados.remove(retorno.get("id"));
     }
 
@@ -141,9 +145,13 @@ public class Receptor extends Thread {
             try {
                 System.out.println("[REQUEST] " + retorno.get("id") + " solicitou um recurso para " + client.name);
                 System.out.println("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
+                SAMPLECONTROLLER.atualizarLog("[REQUEST] " + retorno.get("id") + " solicitou um recurso para " + client.name);
+                TimeUnit.SECONDS.sleep(1);
+                SAMPLECONTROLLER.atualizarLog("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
                 retorno.put("request", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
             } catch (Exception e) {
                 System.out.println("ERRO DE ASSINATURA DIGITAL");
+                SAMPLECONTROLLER.atualizarLog("ERRO DE ASSINATURA DIGITAL");
             }
             this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(), "response");
         }
@@ -159,6 +167,12 @@ public class Receptor extends Thread {
         if (!retorno.get("id").equals(client.name) && !client.status.equals("HELD")) {
             // Desencriptamos de maneira semelhante as outras
             System.out.println("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
+            SAMPLECONTROLLER.atualizarLog("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
+            try {
+                TimeUnit.SECONDS.sleep(1);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
             retorno.put("response", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("response")));
             // Caso o protocolo da mensagem interesse pra gente iremos começar a interpretar as respostas
             if (new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)) {
@@ -173,14 +187,15 @@ public class Receptor extends Thread {
                 else if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED")) {
                     count_RELEASED++;
                     System.out.println("[RESPOSTA] " + retorno.get("id") + " respondeu o protocolo para " + client.name + " com " + new JSONObject(retorno.get("response").toString()).get("status"));
-                    // Caso seja suficiente, libera o acesso ao recurso e zera o TIMEOUT
+                    SAMPLECONTROLLER.atualizarLog("[RESPOSTA] " + retorno.get("id") + " respondeu o protocolo para " + client.name + " com " + new JSONObject(retorno.get("response").toString()).get("status"));
+                     // Caso seja suficiente, libera o acesso ao recurso e zera o TIMEOUT
                     if (count_RELEASED == client.ids_conectados.size() - 1) {
                         if (this.client.stopWatch.isStarted())
                             this.client.stopWatch.suspend();
                         count_RELEASED = 0;
                         current = client.recursos.getfirstFree();
                         if (current != null)
-                            current.utilizarRecurso(client, 3000);
+                            current.utilizarRecurso(client, client.request_time);
                         lista_respostas.clear();
                         client.protocol = -1L;
 
@@ -191,7 +206,8 @@ public class Receptor extends Thread {
                 else if (new JSONObject(retorno.get("response").toString()).get("status").equals("HELD")) {
                     count_HELD++;
                     System.out.println("[RESPOSTA] " + retorno.get("id") + " respondeu o protocolo para " + client.name + " com " + new JSONObject(retorno.get("response").toString()).get("status"));
-                    if (count_HELD == client.recursos.size) {
+                    SAMPLECONTROLLER.atualizarLog("[RESPOSTA] " + retorno.get("id") + " respondeu o protocolo para " + client.name + " com " + new JSONObject(retorno.get("response").toString()).get("status"));
+                     if (count_HELD == client.recursos.size) {
                         count_HELD = 0;
                         count_RELEASED = 0;
                         if (!this.client.status.equals("HELD"))
@@ -210,7 +226,7 @@ public class Receptor extends Thread {
                         num_clientes_checados = 0;
                     current = client.recursos.getfirstFree();
                     if (current != null)
-                        current.utilizarRecurso(client, 10000);
+                        current.utilizarRecurso(client, client.request_time);
                     lista_respostas.clear();
                     client.protocol = -1L;
                     count_HELD = 0;

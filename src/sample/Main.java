@@ -1,5 +1,6 @@
 package sample;
 
+import controllers.SampleController;
 import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -19,6 +20,7 @@ public class Main extends Application {
     public final static Integer WAITING = 1;
     public final static Integer BUSY = 2;
     public static Integer TIMEOUT;
+    public static SampleController SAMPLECONTROLLER;
 
     private static Stage stage;
 
