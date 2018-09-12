@@ -3,8 +3,15 @@ package sample;
 import org.apache.commons.lang3.time.StopWatch;
 import org.json.JSONObject;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.nio.charset.StandardCharsets;
+import java.security.*;
+import java.security.spec.InvalidKeySpecException;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Arrays;
 import java.util.List;
 import java.util.concurrent.CyclicBarrier;
@@ -14,7 +21,7 @@ import static sample.Main.WAITING;
 
 public class Simulador {
 
-    public void simular() {
+    void simular() throws GeneralSecurityException {
         MulticastSocket s = null;
         try {
             Server servidor = new Server();
@@ -31,7 +38,7 @@ public class Simulador {
             Client client1 = new Client(group, "Cliente B", initial_gate, manager);
             Client client2 = new Client(group, "Cliente C", initial_gate, manager);
 
-         //   servidor.start();
+            //   servidor.start();
             TimeUnit.MILLISECONDS.sleep(500);
             client1.start();
             TimeUnit.MILLISECONDS.sleep(1200);
@@ -39,22 +46,41 @@ public class Simulador {
             TimeUnit.MILLISECONDS.sleep(1200);
             client2.start();
 
+            TimeUnit.SECONDS.sleep(1);
+//            try {
+//                System.out.println(client.ids_conectados.get("Cliente A"));
+//                String cod = Criptografia.encriptar(client.keyring.getPrivateKey(), "CRIPTOGRAFIA BOYZ");
+//                System.out.println(cod);
+//                System.out.println(Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get("Cliente A")), cod));
+//            } catch (NoSuchAlgorithmException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeyException e) {
+//                e.printStackTrace();
+//            } catch (NoSuchPaddingException e) {
+//                e.printStackTrace();
+//            } catch (BadPaddingException e) {
+//                e.printStackTrace();
+//            } catch (IllegalBlockSizeException e) {
+//                e.printStackTrace();
+//            } catch (InvalidKeySpecException e) {
+//                e.printStackTrace();
+//            }
 
-            StopWatch stopWatch = new StopWatch();
-            stopWatch.start();
-            TimeUnit.SECONDS.sleep(2);
-            //stopWatch.suspend();
-            System.out.println(stopWatch.getTime());
+//            StopWatch stopWatch = new StopWatch();
+//            stopWatch.start();
+//            TimeUnit.SECONDS.sleep(2);
+//            //stopWatch.suspend();
+//            System.out.println(stopWatch.getTime());
             TimeUnit.MILLISECONDS.sleep(1200);
             client.enviar("-1","request");
-            TimeUnit.MILLISECONDS.sleep(1000);
-            client1.enviar("-1","request");
-            TimeUnit.MILLISECONDS.sleep(1000);
-            client2.enviar("-1","request");
-            TimeUnit.MILLISECONDS.sleep(10000);
-            client.enviar("-1","request");
-            TimeUnit.MILLISECONDS.sleep(10000);
-            client1.enviar("-1","request");
+//            TimeUnit.MILLISECONDS.sleep(1000);
+//            client1.enviar("-1","request");
+//            TimeUnit.MILLISECONDS.sleep(1000);
+//            client2.enviar("-1","request");
+//            TimeUnit.MILLISECONDS.sleep(10000);
+//            client.enviar("-1","request");
+//            TimeUnit.MILLISECONDS.sleep(10000);
+//            client1.enviar("-1","request");
 
             //client2.leaveGroup();
 
@@ -63,8 +89,8 @@ public class Simulador {
 //            System.out.println("Socket: " + e.getMessage());
 //        } catch (IOException e) {
 //            System.out.println("IO: " + e.getMessage());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+            } catch (InterruptedException e) {
+                e.printStackTrace();
         } finally {
             if (s != null) s.close();
         }

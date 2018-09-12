@@ -1,19 +1,12 @@
 package sample;
 
-import javafx.fxml.FXML;
-import javafx.scene.shape.Circle;
 import org.apache.commons.collections4.CollectionUtils;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import javafx.scene.paint.Color;
-import java.util.ArrayList;
-
-
 import javax.crypto.BadPaddingException;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
-import java.awt.*;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.MulticastSocket;
@@ -26,7 +19,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
 
-import static java.awt.Color.ORANGE;
 import static sample.Main.TIMEOUT;
 
 public class Receptor extends Thread {
@@ -34,9 +26,6 @@ public class Receptor extends Thread {
     MulticastSocket ms;
     String name;
     Client client;
-
-    @FXML
-    public Circle imgCliente2;
 
     public Receptor(MulticastSocket ms, String name, Client client)
     {
@@ -76,16 +65,17 @@ public class Receptor extends Thread {
             JSONObject retorno = new JSONObject((new String(messageIn.getData())));
             System.out.println(retorno);
             if(retorno.get("type").equals("conexao")) {
-                if (!client.ids_conectados.containsKey(retorno.get("id").toString()))
-                {
-                    client.ids_conectados.put(retorno.get("id").toString(),retorno.get("key").toString());
-                    client.enviar("","conexao");
-                }
                 JSONArray jsonArray = retorno.getJSONArray("key");
                 byte[] bytes_key = new byte[jsonArray.length()];
                 for (int i = 0; i < jsonArray.length(); i++) {
                     bytes_key[i]=(byte)(((int)jsonArray.get(i)) & 0xFF);
                 }
+                if (!client.ids_conectados.containsKey(retorno.get("id").toString()))
+                {
+                    client.ids_conectados.put(retorno.get("id").toString(),bytes_key);
+                    client.enviar("","conexao");
+                }
+
             }
             else if (retorno.get("type").equals("desconexao"))
             {
@@ -101,6 +91,11 @@ public class Receptor extends Thread {
             }
             else if (retorno.get("type").equals("request") && !retorno.get("id").equals(client.name))
             {
+                try {
+                    retorno.put("request",Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
+                } catch (GeneralSecurityException e) {
+                    e.printStackTrace();
+                }
              //   System.out.println(retorno.get("id").toString() + " com o request = " + retorno.get("request").toString());
              //   System.out.println(new JSONObject(retorno.get("request").toString()).getLong("protocol_time"));
               //  if (new JSONObject(retorno.get("request").toString()).getLong("protocol_time") > this.client.protocol_time)
@@ -110,16 +105,18 @@ public class Receptor extends Thread {
 //                    this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(),"response");
 //                    client.status = old_status;
 //                }
+                System.out.println(retorno);
                 this.client.enviar(new JSONObject(retorno.get("request").toString()).get("protocol").toString(),"response");
             }
-            else if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name) && new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)){
+            if (retorno.get("type").equals("response") && !retorno.get("id").equals(client.name)){
+                if(new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)) {
                     num_clientes_checados++;
                     lista_respostas.add(retorno.get("id").toString());
                     //   System.out.println(client.name + " OUVIU " + retorno.get("id").toString() + " respondeu = " + retorno.get("response").toString());
                     if (new JSONObject(retorno.get("response").toString()).get("status").equals("RELEASED")) {
                         count_RELEASED++;
                         if (count_RELEASED == client.ids_conectados.size() - 1) {
-                            if(this.client.stopWatch.isStarted())
+                            if (this.client.stopWatch.isStarted())
                                 this.client.stopWatch.suspend();
                             count_RELEASED = 0;
                             System.out.println(client.name + " PODEMOS ALOCAR O RECURSO");
@@ -135,11 +132,10 @@ public class Receptor extends Thread {
                             //TODO DROP PROTOCOL e RESET DOS CONTADORES
                             count_HELD = 0;
                             count_RELEASED = 0;
-                            current = new Recurso("a",1);
-                            if (this.client.status != "HELD") {
+                            current = new Recurso("a", 1);
+                            if (this.client.status != "HELD")
                                 this.client.status = "WANTED";
-                            }
-                                lista_respostas.clear();
+                            lista_respostas.clear();
                             this.client.stopWatch.suspend();
                             this.client.protocol_time = System.currentTimeMillis();
                         }
@@ -163,7 +159,7 @@ public class Receptor extends Thread {
                                 //TODO DROP PROTOCOL e RESET DOS CONTADORES
                                 count_HELD = 0;
                                 count_RELEASED = 0;
-                                current = new Recurso("a",1);
+                                current = new Recurso("a", 1);
                                 if (this.client.status != "HELD")
                                     this.client.status = "WANTED";
                                 lista_respostas.clear();
@@ -171,6 +167,7 @@ public class Receptor extends Thread {
                             }
                         }
                     }
+                }
                     if (num_clientes_checados == client.ids_conectados.size() - 1 && current == null)
                     {
                         if (this.client.stopWatch.isStarted())

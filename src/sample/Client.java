@@ -4,6 +4,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.security.InvalidKeyException;
 import java.security.NoSuchAlgorithmException;
 import java.util.*;
 import java.util.concurrent.BrokenBarrierException;
@@ -13,6 +14,10 @@ import java.util.concurrent.TimeUnit;
 import org.apache.commons.lang3.time.StopWatch;
 import org.json.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
+
 import static java.lang.System.currentTimeMillis;
 import static sample.Main.PORT;
 
@@ -21,7 +26,7 @@ public class Client extends Thread {
     InetAddress group;
     String name;
     Receptor receptor;
-    Map<String, String> ids_conectados;
+    Map<String, byte[]> ids_conectados;
     GenerateKeys keyring;
     CyclicBarrier gate;
     Manager recursos;
@@ -100,7 +105,19 @@ public class Client extends Thread {
                 this.protocol_time = System.currentTimeMillis();
                 r = new Request(this.name, protocol_time, 200);
             }
-                json.put("request", r.toString());
+            try {
+                json.put("request", Criptografia.encriptar(keyring.getPrivateKey(),r.toString()));
+            } catch (InvalidKeyException e) {
+                e.printStackTrace();
+            } catch (NoSuchPaddingException e) {
+                e.printStackTrace();
+            } catch (NoSuchAlgorithmException e) {
+                e.printStackTrace();
+            } catch (BadPaddingException e) {
+                e.printStackTrace();
+            } catch (IllegalBlockSizeException e) {
+                e.printStackTrace();
+            }
             this.protocol = r.getProtocol();
             if (!this.stopWatch.isStarted())
                 this.stopWatch.start();

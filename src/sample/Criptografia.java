@@ -5,6 +5,7 @@ import javax.crypto.Cipher;
 import javax.crypto.IllegalBlockSizeException;
 import javax.crypto.NoSuchPaddingException;
 import java.security.*;
+import java.security.spec.X509EncodedKeySpec;
 import java.util.Base64;
 
 public class Criptografia {
@@ -24,5 +25,11 @@ public class Criptografia {
         Cipher cipher = Cipher.getInstance("RSA");
         cipher.init(Cipher.DECRYPT_MODE, key);
         return new String(cipher.doFinal(encrypted));
+    }
+
+    public static PublicKey loadPublicKey(byte[] data) throws GeneralSecurityException {
+        X509EncodedKeySpec spec = new X509EncodedKeySpec(data);
+        KeyFactory fact = KeyFactory.getInstance("RSA");
+        return fact.generatePublic(spec);
     }
 }
