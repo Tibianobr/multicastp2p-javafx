@@ -1,5 +1,7 @@
 package sample;
 
+import controllers.SampleController;
+
 import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.security.*;

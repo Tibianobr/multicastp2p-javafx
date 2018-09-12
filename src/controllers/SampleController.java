@@ -10,8 +10,21 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.ChoiceBox;
 import javafx.collections.FXCollections;
 import javafx.stage.Stage;
+import sample.*;
 
+import javax.crypto.BadPaddingException;
+import javax.crypto.IllegalBlockSizeException;
+import javax.crypto.NoSuchPaddingException;
 import javax.swing.*;
+import java.net.InetAddress;
+import java.security.InvalidKeyException;
+import java.security.NoSuchAlgorithmException;
+import java.util.Arrays;
+import java.util.List;
+import java.util.concurrent.CyclicBarrier;
+import java.util.concurrent.TimeUnit;
+
+import static sample.Main.WAITING;
 
 
 public class SampleController{
@@ -25,7 +38,7 @@ public class SampleController{
             imgCliente5, imgCliente6, imgCliente7, imgCliente8;
 
     @FXML
-    private TextField nomeCliente;
+    private TextField nomeCliente, tempoUso;
 
     @FXML
     private ChoiceBox<String> selecionarCliente, selecionaClienteDelete;
@@ -36,12 +49,25 @@ public class SampleController{
     private int count=3;
 
     public void inicia(){
-        selecionarCliente.setItems(FXCollections.observableArrayList(textoCliente1.getText(), textoCliente2.getText(), textoCliente3.getText(), textoCliente4.getText(), textoCliente5.getText(),
-                textoCliente6.getText(), textoCliente7.getText(), textoCliente8.getText()));
-        selecionaClienteDelete.setItems(FXCollections.observableArrayList(textoCliente1.getText(), textoCliente2.getText(), textoCliente3.getText(), textoCliente4.getText(), textoCliente5.getText(),
-                textoCliente6.getText(), textoCliente7.getText(), textoCliente8.getText()));
+        textoCliente1.setText("Cliente A");
+        imgCliente1.setVisible(true);
+        imgCliente1.setFill(Color.RED);
+
+        textoCliente2.setText("Cliente B");
+        imgCliente2.setVisible(true);
+        imgCliente2.setFill(Color.RED);
+
+        textoCliente3.setText("Cliente C");
+        imgCliente3.setVisible(true);
+        imgCliente3.setFill(Color.RED);
+
+        selecionarCliente.setItems(FXCollections.observableArrayList(textoCliente1.getText(), textoCliente2.getText(), textoCliente3.getText()));
+        selecionaClienteDelete.setItems(FXCollections.observableArrayList(textoCliente1.getText(), textoCliente2.getText(), textoCliente3.getText()));
+
+        new Simulador().start();
+
     }
-    public void adicionarCliente(){
+    public void adicionarCliente() throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException, InterruptedException {
         if(count == 3) {
             textoCliente4.setText(nomeCliente.getText());
             imgCliente4.setVisible(true);
@@ -83,35 +109,49 @@ public class SampleController{
 
         nomeCliente.clear();
     }
-    public void solicitarRecurso(){
+
+
+    public void solicitarRecurso() throws InterruptedException {
         String selecionado = selecionarCliente.getValue();
 
         if(selecionado == textoCliente1.getText()) {
             imgCliente1.setFill(Color.ORANGE);
-            log.setText(log.getText() + "New Text");
-
+            log.setText(textoCliente1.getText() + " Solicitou um recurso"+ "\n" + log.getText());
         }
-        else if(selecionado == textoCliente2.getText())
-            imgCliente2.setFill(Color.ORANGE);
 
-        else if(selecionado == textoCliente3.getText())
+        else if(selecionado == textoCliente2.getText()){
+            imgCliente2.setFill(Color.ORANGE);
+            log.setText(textoCliente2.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+        }
+
+        else if(selecionado == textoCliente3.getText()){
             imgCliente3.setFill(Color.ORANGE);
+            log.setText(textoCliente3.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+        }
 
         else if(selecionado == textoCliente4.getText()) {
             imgCliente4.setFill(Color.ORANGE);
+            TimeUnit.SECONDS.sleep(1);
+
             log.setText(textoCliente4.getText() + " Solicitou um recurso"+ "\n" + log.getText());
         }
         else if(selecionado == textoCliente5.getText()) {
             imgCliente5.setFill(Color.ORANGE);
             log.setText(textoCliente5.getText() + " Solicitou um recurso"+ "\n" + log.getText());
         }
-        else if(selecionado == textoCliente6.getText())
+        else if(selecionado == textoCliente6.getText()){
             imgCliente6.setFill(Color.ORANGE);
+            log.setText(textoCliente6.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+        }
 
-        else if(selecionado == textoCliente7.getText())
+        else if(selecionado == textoCliente7.getText()){
             imgCliente7.setFill(Color.ORANGE);
+            log.setText(textoCliente7.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+        }
 
-        else if(selecionado == textoCliente8.getText())
+        else if(selecionado == textoCliente8.getText()){
             imgCliente8.setFill(Color.ORANGE);
+            log.setText(textoCliente8.getText() + " Solicitou um recurso"+ "\n" + log.getText());
+        }
     }
 }
