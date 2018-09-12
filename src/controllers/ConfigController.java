@@ -21,6 +21,7 @@ public class ConfigController {
         else{
             Main.changeScreen("Sample");
             TIMEOUT = Integer.parseInt(tempoResposta.getText());
+            new Simulador(false).start();
         }
     }
 }

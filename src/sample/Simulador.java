@@ -26,6 +26,10 @@ import static sample.Main.WAITING;
 public class Simulador extends Thread {
     public boolean automatico;
 
+    public Simulador(boolean automatico) {
+        this.automatico = automatico;
+    }
+
     @Override
     public void run() {
         try {
@@ -39,16 +43,7 @@ public class Simulador extends Thread {
     }
 
     private void visual() {
-        Server servidor = new Server();
-        InetAddress group = servidor.criarGrupo();
-        Recurso processador = new Recurso("Recurso 001", WAITING);
-        Recurso memoria = new Recurso("Recurso 002", WAITING);
-        List<Recurso> recursos = Arrays.asList(processador, memoria);
-        Manager manager = new Manager(recursos);
-        servidor.configurar(group, "Server 01", manager);
-        while (true) {
-                // COMUNICAÇÃO COM A TELA
-        }
+
     }
 
 
