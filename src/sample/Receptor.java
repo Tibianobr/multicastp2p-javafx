@@ -98,6 +98,7 @@ public class Receptor extends Thread {
     }
 
     private void desconexao(JSONObject retorno) {
+        System.out.println("[DISCONNECT]" + this.client.name + " recebeu o aviso de desconexao de " + retorno.get("id"));
         this.client.ids_conectados.remove(retorno.get("id"));
     }
 
@@ -111,8 +112,9 @@ public class Receptor extends Thread {
     private void request(JSONObject retorno) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
         if (!retorno.get("id").equals(client.name)) {
             try {
-                retorno.put("request", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
                 System.out.println("[REQUEST] " + retorno.get("id") + " solicitou um recurso para " + client.name);
+                System.out.println("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
+                retorno.put("request", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("request")));
             } catch (Exception e) {
                 System.out.println("ERRO DE ASSINATURA DIGITAL");
             }
@@ -122,6 +124,7 @@ public class Receptor extends Thread {
 
     private void response(JSONObject retorno) throws GeneralSecurityException {
         if (!retorno.get("id").equals(client.name) && !client.status.equals("HELD")) {
+            System.out.println("[CRIPTOGRAFIA] " + this.name + " está desencriptando com a chave pública de " + retorno.get("id"));
             retorno.put("response", Criptografia.desencriptar(Criptografia.loadPublicKey(client.ids_conectados.get(retorno.get("id"))), retorno.getString("response")));
             if (new JSONObject(retorno.get("response").toString()).get("protocol").equals(client.protocol)) {
                 num_clientes_checados++;
