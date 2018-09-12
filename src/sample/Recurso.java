@@ -42,7 +42,7 @@ public class Recurso{
         this.current = current;
     }
 
-    public String utilizarRecurso(Client cliente ,Integer time)
+    public String utilizarRecurso(Client cliente, Integer time)
     {
         this.setCurrent(cliente);
         System.out.println("[USAGE] " + current.name + " está utilizando o recurso " + this.id_name);
@@ -71,6 +71,4 @@ public class Recurso{
         this.setCurrent(null);
         this.status = WAITING;
     }
-
-
 }

@@ -13,6 +13,6 @@
             <Cursor fx:constant="HAND" />
          </cursor></JFXButton>
       <Text layoutX="20.0" layoutY="45.0" strokeType="OUTSIDE" strokeWidth="0.0" text="Tempo de Resposta" />
-      <TextField id="tempoResposta" fx:id="tempoResposta" layoutX="146.0" layoutY="28.0" prefHeight="25.0" prefWidth="133.0" />
+      <TextField id="tempoResposta" fx:id="tempoResposta" layoutX="146.0" layoutY="28.0" prefHeight="25.0" prefWidth="133.0" promptText="em ms" />
    </children>
 </AnchorPane>
