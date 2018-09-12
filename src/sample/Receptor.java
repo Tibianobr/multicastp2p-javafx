@@ -56,15 +56,8 @@ public class Receptor extends Thread {
     private void escutar() throws GeneralSecurityException {
 
         while (true) {
-            // Trata o Timeout iniciado ao mandar um request
-            if (this.client.stopWatch.getTime() > TIMEOUT) {
-                lista_respostas.add(this.client.name);
-                System.out.println("[TIMEOUT]" + client.name + " deu TIMEOUT em " + CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas));
-                for (String nome : CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas)) {
-                   // client.ids_conectados.remove(nome);
-                }
-                client.stopWatch.reset();
-            }
+
+
             current = null;
             DatagramPacket messageIn = new DatagramPacket(buffer, buffer.length);
             // Recebe a mensagem
@@ -94,12 +87,32 @@ public class Receptor extends Thread {
                 case "response":
                     this.response(retorno);
                     break;
+                case "timeout":
+                    this.timeoutcheck(retorno);
+                    break;
                 case "discard":
                     System.out.println("[DISCARD] o grupo descartou a mensagem de " + retorno.get("id") + " pois fez um request ou desconexao enquanto utiliza o recurso!! ");
                     SAMPLECONTROLLER.atualizarLog("[DISCARD] o grupo descartou a mensagem de " + retorno.get("id") + " pois fez um request ou desconexao enquanto utiliza o recurso!! ");
                     break;
             }
+            // Trata o Timeout iniciado ao mandar um request
+            if (this.client.stopWatch.getTime() > TIMEOUT) {
+                lista_respostas.add(this.client.name);
+                String timeout = "";
+                System.out.println("[TIMEOUT]" + client.name + " deu TIMEOUT em " + CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas));
+                for (String nome : CollectionUtils.disjunction(client.ids_conectados.keySet(), lista_respostas)) {
+                     client.ids_conectados.remove(nome);
+                     timeout = nome;
+                }
+                client.enviar(timeout,"timeout");
+                client.stopWatch.reset();
+            }
         }
+    }
+
+    private void timeoutcheck(JSONObject retorno) throws IllegalBlockSizeException, NoSuchPaddingException, NoSuchAlgorithmException, InvalidKeyException, BadPaddingException {
+        if(retorno.get("timeout").equals(this.client.name))
+            this.client.enviar("","conexao");
     }
 
     /*
@@ -162,6 +175,8 @@ public class Receptor extends Thread {
         entrar no status de WANTED
      */
     private void response(JSONObject retorno) throws GeneralSecurityException {
+        if (client.ids_conectados.containsKey(retorno.get("id")))
+        {
         // Checamos se interessa a mensagem para o receptor
         if (!retorno.get("id").equals(client.name) && !client.status.equals("HELD")) {
             // Desencriptamos de maneira semelhante as outras
@@ -232,6 +247,21 @@ public class Receptor extends Thread {
                     count_RELEASED = 0;
                 }
             }
+        }
+    }
+    else
+        if (num_clientes_checados == client.ids_conectados.size() - 1 && !this.client.status.equals("HELD") && client.protocol != -1) {
+            if (this.client.stopWatch.isStarted()) {
+                this.client.stopWatch.reset();
+            }
+            num_clientes_checados = 0;
+            current = client.recursos.getfirstFree();
+            if (current != null)
+                current.utilizarRecurso(client, client.request_time);
+            lista_respostas.clear();
+            client.protocol = -1L;
+            count_HELD = 0;
+            count_RELEASED = 0;
         }
     }
 }

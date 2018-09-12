@@ -132,6 +132,10 @@ public class Client extends Thread {
             }
 
         }
+        else if(tipo.equals("timeout"))
+        {
+            json.put("timeout",msg);
+        }
         // Caso seja do tipo request(solicitação de recurso) o processo tem que garantir que não esteja já utilizando
         // passamos também o tempo que o protocolo foi criado para priorizar quem pediu antes caso exista mais de um
         // processo com o estado de WANTED
@@ -160,8 +164,8 @@ public class Client extends Thread {
             this.status = "WANTED";
             }
             // Para a resposta(reponse) seguimos a mesma logica de criptografar uma parte da mensagem
-            else if (tipo.equals("response")) {
-            json.put("response", Criptografia.encriptar(keyring.getPrivateKey(),new Response(Long.parseLong(msg), this.status,this.protocol_time).toString()));
+        else if (tipo.equals("response")) {
+            json.put("response", Criptografia.encriptar(keyring.getPrivateKey(), new Response(Long.parseLong(msg), this.status, this.protocol_time).toString()));
             System.out.println("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada a [RESPONSE]");
             SAMPLECONTROLLER.atualizarLog("[CRIPTOGRAFIA] " + this.name + " está criptografando com sua chave privada a [RESPONSE]");
 

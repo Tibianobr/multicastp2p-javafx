@@ -35,15 +35,9 @@ public class Simulador extends Thread {
         try {
             if (automatico)
                 simular();
-            else
-                visual();
         } catch (GeneralSecurityException e) {
             e.printStackTrace();
         }
-    }
-
-    private void visual() {
-
     }
 
 
