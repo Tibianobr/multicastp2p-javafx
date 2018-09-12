@@ -1,5 +1,9 @@
 package sample;
 
+import controllers.SampleController;
+
+import java.awt.*;
+import javafx.scene.paint.Color;
 import java.util.concurrent.TimeUnit;
 
 import static sample.Main.BUSY;
@@ -15,7 +19,6 @@ public class Recurso{
         this.id_name = name;
         this.status = status;
     }
-
 
     public String getId_name() {
         return id_name;

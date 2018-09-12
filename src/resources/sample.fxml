@@ -6,6 +6,7 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.layout.AnchorPane?>
 <?import javafx.scene.layout.Pane?>
@@ -28,13 +29,13 @@
                   <Cursor fx:constant="HAND" />
                </cursor>
             </JFXButton>
-            <ChoiceBox fx:id="selecionarCliente" layoutX="-2.0" layoutY="275.0" prefHeight="25.0" prefWidth="122.0">
+            <ChoiceBox fx:id="selecionarCliente" layoutX="-2.0" layoutY="275.0" prefHeight="25.0" prefWidth="249.0">
                <cursor>
                   <Cursor fx:constant="DEFAULT" />
                </cursor>
             </ChoiceBox>
             <TextField fx:id="nomeCliente" layoutX="-1.0" layoutY="432.0" prefHeight="25.0" prefWidth="122.0" promptText="Nome do Cliente" />
-            <JFXButton fx:id="solicitarRecurso1" layoutX="-2.0" layoutY="339.0" prefHeight="25.0" prefWidth="249.0" style="-fx-background-color: #c2c2c2;" text="Solicitar Recurso">
+            <JFXButton layoutX="-2.0" layoutY="339.0" onAction="#solicitarRecurso" prefHeight="25.0" prefWidth="249.0" style="-fx-background-color: #c2c2c2;" text="Solicitar Recurso">
                <cursor>
                   <Cursor fx:constant="HAND" />
                </cursor>
@@ -52,14 +53,12 @@
                   <Font size="21.0" />
                </font>
             </Text>
-            <ChoiceBox fx:id="selecionaRecurso" layoutX="119.0" layoutY="275.0" prefHeight="25.0" prefWidth="122.0">
-               <cursor>
-                  <Cursor fx:constant="DEFAULT" />
-               </cursor>
-            </ChoiceBox>
             <ScrollPane layoutY="43.0" prefHeight="211.0" prefWidth="243.0">
               <content>
-                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="454.0" prefWidth="228.0" />
+                <AnchorPane minHeight="0.0" minWidth="0.0" prefHeight="454.0" prefWidth="228.0">
+                     <children>
+                        <TextArea fx:id="log" prefHeight="452.0" prefWidth="228.0" promptText="Log" />
+                     </children></AnchorPane>
               </content>
             </ScrollPane>
          </children>

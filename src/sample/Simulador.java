@@ -21,7 +21,7 @@ import static sample.Main.WAITING;
 
 public class Simulador {
 
-    void simular() throws GeneralSecurityException {
+    public void simular() throws GeneralSecurityException {
         MulticastSocket s = null;
         try {
             Server servidor = new Server();
